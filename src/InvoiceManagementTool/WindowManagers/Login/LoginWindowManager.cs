@@ -10,9 +10,9 @@ namespace InvoiceManagementTool.WindowManagers.Login
 {
     public class LoginWindowManager : ILoginWindowManager
     {
-        private readonly ILoginAccountService _loginAccountService;
+        private readonly ILoginUserService _loginAccountService;
         private readonly IWindowNavigator _windowNavigator;
-        public LoginWindowManager(ILoginAccountService loginAccountService, IWindowNavigator windowNavigator)
+        public LoginWindowManager(ILoginUserService loginAccountService, IWindowNavigator windowNavigator)
         {
             _loginAccountService = loginAccountService;
             _windowNavigator = windowNavigator;

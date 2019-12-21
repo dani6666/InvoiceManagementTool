@@ -5,7 +5,7 @@ using System.Text;
 
 namespace InvoiceManagementTool.Core.Interfaces.Services
 {
-    public interface ILoginAccountService
+    public interface ILoginUserService
     {
         Roles? ValidateUser(string login, string password);
     }

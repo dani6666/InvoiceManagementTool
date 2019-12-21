@@ -1,4 +1,5 @@
-﻿using InvoiceManagementTool.WindowManagers.Login;
+﻿using InvoiceManagementTool.Infrastructure;
+using InvoiceManagementTool.WindowManagers.Login;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -28,6 +29,7 @@ namespace InvoiceManagementTool.Windows
 
         private void LoginButton_Click(object sender, RoutedEventArgs e)
         {
+            new SqlDatabaseConnector().SendSelectCommand("afce", 2);
             if(_loginWindowManager.ExecuteLoginAction(LoginTextBox.Text, PasswordBox.Password))
             {
                 Close();

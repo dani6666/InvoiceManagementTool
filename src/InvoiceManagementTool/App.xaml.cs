@@ -43,7 +43,7 @@ namespace InvoiceManagementTool
                 .AddTransient<IAdminAccessWindowManager, AdminAccessWindowManager>()
                 .AddTransient<IAccountantAccessWindowManager, AccountantAccessWindowManager>()
                 .AddTransient<IManagerAccessWindowManager, ManagerAccessWindowManager>()
-                .AddTransient<ILoginAccountService, AccountService>();
+                .AddTransient<ILoginUserService, UsersService>();
         }
 
         private void OnStartup(object sender, StartupEventArgs e)
