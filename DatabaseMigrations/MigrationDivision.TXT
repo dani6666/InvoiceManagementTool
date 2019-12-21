@@ -1,0 +1,5 @@
+1. Create database
+2. Add db users
+3. Add tables/ pks fks
+4. Idexes and procedures
+To be edited
