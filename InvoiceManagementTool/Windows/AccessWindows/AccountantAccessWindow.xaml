@@ -1,0 +1,17 @@
+﻿<Window x:Class="InvoiceManagementTool.Windows.AccountantAccessWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:InvoiceManagementTool.Windows"
+        mc:Ignorable="d"
+        Title="AccountantAccessWindow" Height="160" Width="120" ResizeMode="NoResize">
+    <Grid>
+        <StackPanel>
+            <Button Name="ShowInvoicesButton" Content="Show invoices" Width="90" HorizontalAlignment="Center" Margin="0,15,0,0" Click="ShowInvoicesButton_Click"/>
+            <Button Name="ShowClietsButton" Content="Show clients" Width="90" HorizontalAlignment="Center" Margin="0,20,0,0" Click="ShowClietsButton_Click"/>
+            <Button Name="ShowProductsButton" Content="Show products" Width="90" HorizontalAlignment="Center" Margin="0,20,0,0" Click="ShowProductsButton_Click"/>
+        </StackPanel>
+
+    </Grid>
+</Window>

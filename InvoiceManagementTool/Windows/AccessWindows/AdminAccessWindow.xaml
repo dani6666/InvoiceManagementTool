@@ -1,0 +1,34 @@
+﻿<Window x:Class="InvoiceManagementTool.Windows.AdminAccessWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:InvoiceManagementTool.Windows"
+        mc:Ignorable="d"
+        Title="AdminAccessWindow" Height="160" Width="470">
+    <Grid>
+        <StackPanel Orientation="Horizontal">
+            <StackPanel Margin="15,0,0,10" VerticalAlignment="Center">
+                <Button Name="ShowInvoicesButton" Content="Show invoices" Width="100" HorizontalAlignment="Center" Margin="0,0,0,0" Click="ShowInvoicesButton_Click"/>
+                <Button Name="ShowClietsButton" Content="Show clients" Width="100" HorizontalAlignment="Center" Margin="0,20,0,0" Click="ShowClietsButton_Click"/>
+                <Button Name="ShowProductsButton" Content="Show products" Width="100" HorizontalAlignment="Center" Margin="0,20,0,0" Click="ShowProductsButton_Click"/>
+            </StackPanel>
+
+            <StackPanel Margin="15,0,0,10"  VerticalAlignment="Center">
+                <Button Name="AddInvoiceButton" Content="Add invoice" Width="100" HorizontalAlignment="Center" Margin="0,0,0,0" Click="AddInvoiceButton_Click"/>
+                <Button Name="AddClietButton" Content="Add client" Width="100" HorizontalAlignment="Center" Margin="0,20,0,0" Click="AddClietButton_Click"/>
+                <Button Name="AddProductButton" Content="Add product" Width="100" HorizontalAlignment="Center" Margin="0,20,0,0" Click="AddProductButton_Click"/>
+            </StackPanel>
+
+            <StackPanel Margin="15,0,0,10"  VerticalAlignment="Center">
+                <Button Name="ShowUsersButton" Content="Show users" Width="100" HorizontalAlignment="Center" Margin="0,0,0,0" Click="ShowUsersButton_Click"/>
+                <Button Name="BackupDatabaseButton" Content="Backup database" Width="100" HorizontalAlignment="Center" Margin="0,15,0,0" Click="BackupDatabaseButton_Click"/>
+            </StackPanel>
+
+            <StackPanel Margin="15,0,0,10" VerticalAlignment="Center">
+                <Button Name="AddUserButton" Content="Add user" Width="100" HorizontalAlignment="Center" Margin="0,0,0,0" Click="AddUserButton_Click"/>
+                <Button Name="RestoreDatabaseButton" Content="Restore database" Width="100" HorizontalAlignment="Center" Margin="0,15,0,0" Click="RestoreDatabaseButton_Click"/>
+            </StackPanel>
+        </StackPanel>
+    </Grid>
+</Window>
