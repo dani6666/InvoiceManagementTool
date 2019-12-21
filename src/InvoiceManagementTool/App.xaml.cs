@@ -1,5 +1,7 @@
-﻿using InvoiceManagementTool.Core.Interfaces.Services;
+﻿using InvoiceManagementTool.Core.Interfaces;
+using InvoiceManagementTool.Core.Interfaces.Services;
 using InvoiceManagementTool.Core.Services;
+using InvoiceManagementTool.Infrastructure;
 using InvoiceManagementTool.WindowManagers.AccountantAccess;
 using InvoiceManagementTool.WindowManagers.AdminAccess;
 using InvoiceManagementTool.WindowManagers.Login;
@@ -43,7 +45,11 @@ namespace InvoiceManagementTool
                 .AddTransient<IAdminAccessWindowManager, AdminAccessWindowManager>()
                 .AddTransient<IAccountantAccessWindowManager, AccountantAccessWindowManager>()
                 .AddTransient<IManagerAccessWindowManager, ManagerAccessWindowManager>()
-                .AddTransient<ILoginUserService, UsersService>();
+                .AddTransient<ILoginUserService, UsersService>()
+                .AddTransient<IClientsService, ClientsService>()
+                .AddTransient<IProductsService, ProductsService>()
+                .AddTransient<IInvoicesService, InvoicesService>()
+                .AddTransient<ISqlDatabaseConnector, SqlDatabaseConnector>();
         }
 
         private void OnStartup(object sender, StartupEventArgs e)
