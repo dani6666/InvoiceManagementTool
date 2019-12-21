@@ -6,7 +6,7 @@ using System.Text;
 
 namespace InvoiceManagementTool.Core.Services
 {
-    public class AccountService : ILoginAccountService
+    public class UsersService : ILoginUserService
     {
 
         public Roles? ValidateUser(string login, string password)
