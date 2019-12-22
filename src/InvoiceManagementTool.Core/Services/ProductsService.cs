@@ -25,5 +25,20 @@ namespace InvoiceManagementTool.Core.Services
         {
 
         }
+
+        public void UpdateProduct(Product product)
+        {
+
+        }
+
+        public void DeleteProduct(int productId)
+        {
+
+        }
+
+        public Product GetProductById(int id)
+        {
+            return null;
+        }
     }
 }

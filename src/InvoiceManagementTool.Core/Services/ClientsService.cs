@@ -25,5 +25,20 @@ namespace InvoiceManagementTool.Core.Services
         {
 
         }
+
+        public void UpdateClient(Client client)
+        {
+
+        }
+
+        public void DeleteClient(int clientId)
+        {
+
+        }
+
+        public Client GetClientById(string identity)
+        {
+            return null;
+        }
     }
 }

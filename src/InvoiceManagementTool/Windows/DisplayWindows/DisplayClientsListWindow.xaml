@@ -7,6 +7,8 @@
         mc:Ignorable="d"
         Title="DisplayClientsListWindow" Height="450" Width="800">
     <Grid>
-        
+        <StackPanel Name="ClientsStackPanel">
+
+        </StackPanel>
     </Grid>
 </Window>
