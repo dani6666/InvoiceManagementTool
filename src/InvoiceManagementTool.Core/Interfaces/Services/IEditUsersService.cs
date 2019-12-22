@@ -1,7 +1,5 @@
-﻿using System;
+﻿using InvoiceManagementTool.Core.Model;
 using System.Collections.Generic;
-using System.Text;
-using InvoiceManagementTool.Core.Model;
 
 namespace InvoiceManagementTool.Core.Interfaces.Services
 {

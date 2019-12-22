@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using InvoiceManagementTool.Core.Interfaces.Services;
+﻿using InvoiceManagementTool.Core.Interfaces.Services;
 using InvoiceManagementTool.Core.Model;
 using InvoiceManagementTool.Windows.ManipulationWindows;
+using System.Collections.Generic;
 
 namespace InvoiceManagementTool.WindowManagers.DisplayUsersList
 {

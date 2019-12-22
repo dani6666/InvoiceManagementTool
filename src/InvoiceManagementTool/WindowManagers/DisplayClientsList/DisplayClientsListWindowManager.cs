@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using InvoiceManagementTool.Core.Interfaces.Services;
+﻿using InvoiceManagementTool.Core.Interfaces.Services;
 using InvoiceManagementTool.Core.Model;
 using InvoiceManagementTool.Windows;
-using InvoiceManagementTool.Windows.ManipulationWindows;
+using System.Collections.Generic;
 
 namespace InvoiceManagementTool.WindowManagers.DisplayClientsList
 {
@@ -24,7 +21,7 @@ namespace InvoiceManagementTool.WindowManagers.DisplayClientsList
             return _clientsService.GetAllClients();
         }
 
-        public void OpenEditClientWindow(int clientId)
+        public void OpenEditClientWindow(string clientId)
         {
             var client= _clientsService.GetClientById(clientId);
 
