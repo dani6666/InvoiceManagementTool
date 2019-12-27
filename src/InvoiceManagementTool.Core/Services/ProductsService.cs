@@ -1,9 +1,7 @@
 ﻿using InvoiceManagementTool.Core.Interfaces;
 using InvoiceManagementTool.Core.Interfaces.Services;
 using InvoiceManagementTool.Core.Model;
-using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace InvoiceManagementTool.Core.Services
 {
@@ -24,6 +22,21 @@ namespace InvoiceManagementTool.Core.Services
         public void AddProduct(Product product)
         {
 
+        }
+
+        public void UpdateProduct(Product product)
+        {
+
+        }
+
+        public void DeleteProduct(int productId)
+        {
+
+        }
+
+        public Product GetProductById(int id)
+        {
+            return null;
         }
     }
 }

@@ -2,18 +2,14 @@
 using InvoiceManagementTool.Core.Interfaces.Services;
 using InvoiceManagementTool.Core.Services;
 using InvoiceManagementTool.Infrastructure;
-using InvoiceManagementTool.WindowManagers.AccountantAccess;
-using InvoiceManagementTool.WindowManagers.AdminAccess;
+using InvoiceManagementTool.WindowManagers.DisplayClientsList;
+using InvoiceManagementTool.WindowManagers.DisplayProductsList;
+using InvoiceManagementTool.WindowManagers.DisplayUsersList;
 using InvoiceManagementTool.WindowManagers.Login;
-using InvoiceManagementTool.WindowManagers.ManagerAccess;
 using InvoiceManagementTool.Windows;
+using InvoiceManagementTool.Windows.DisplayWindows;
+using InvoiceManagementTool.Windows.ManipulationWindows;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.Linq;
-using System.Threading.Tasks;
 using System.Windows;
 
 namespace InvoiceManagementTool
@@ -40,11 +36,32 @@ namespace InvoiceManagementTool
                 .AddSingleton<CashierAccessWindow>()
                 .AddSingleton<ManagerAccessWindow>()
                 .AddSingleton<AccountantAccessWindow>()
-                .AddSingleton<IWindowNavigator, WindowNavigator>()
+
+                .AddSingleton<DisplayClientsListWindowManager>()
+                .AddSingleton<DisplayProductsListWindowManager>()
+                .AddSingleton<DisplayInvoicesListWindow>()
+                .AddSingleton<DisplayUsersListWindow>()
+
+                .AddSingleton<ClientManipulationWindow>()
+                .AddSingleton<InvoiceManipulationWindow>()
+                .AddSingleton<ProductManipulationWindow>()
+                .AddSingleton<UserMaipulationWindow>()
+
                 .AddTransient<ILoginWindowManager, LoginWindowManager>()
-                .AddTransient<IAdminAccessWindowManager, AdminAccessWindowManager>()
-                .AddTransient<IAccountantAccessWindowManager, AccountantAccessWindowManager>()
-                .AddTransient<IManagerAccessWindowManager, ManagerAccessWindowManager>()
+                .AddTransient<IDisplayClientsListWindowManager, DisplayClientsListWindowManager>()
+                .AddTransient<IDisplayProductsListWindowManager, DisplayProductsListWindowManager>()
+                .AddTransient<IDisplayUsersListWindowManager, DisplayUsersListWindowManager>()
+
+                .AddTransient<ISqlDatabaseConnector, SqlDatabaseConnector>()
+                .AddTransient<ISqlDatabaseConnector, SqlDatabaseConnector>()
+                .AddTransient<ISqlDatabaseConnector, SqlDatabaseConnector>()
+                .AddTransient<ISqlDatabaseConnector, SqlDatabaseConnector>()
+                .AddTransient<ISqlDatabaseConnector, SqlDatabaseConnector>()
+                .AddTransient<ISqlDatabaseConnector, SqlDatabaseConnector>()
+                .AddTransient<ISqlDatabaseConnector, SqlDatabaseConnector>()
+                .AddTransient<ISqlDatabaseConnector, SqlDatabaseConnector>()
+
+                .AddSingleton<IWindowNavigator, WindowNavigator>()
                 .AddTransient<ILoginUserService, UsersService>()
                 .AddTransient<IClientsService, ClientsService>()
                 .AddTransient<IProductsService, ProductsService>()

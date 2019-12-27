@@ -1,14 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using InvoiceManagementTool.Core.Interfaces.Services;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace InvoiceManagementTool.Windows.DisplayWindows
 {
@@ -17,9 +8,12 @@ namespace InvoiceManagementTool.Windows.DisplayWindows
     /// </summary>
     public partial class DisplayInvoicesListWindow : Window
     {
-        public DisplayInvoicesListWindow()
+        private readonly IInvoicesService _invoicesService;
+        public DisplayInvoicesListWindow(IInvoicesService invoicesService)
         {
             InitializeComponent();
+
+            _invoicesService = invoicesService;
         }
     }
 }

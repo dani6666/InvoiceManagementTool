@@ -1,9 +1,7 @@
 ﻿using InvoiceManagementTool.Core.Interfaces;
 using InvoiceManagementTool.Core.Interfaces.Services;
 using InvoiceManagementTool.Core.Model;
-using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace InvoiceManagementTool.Core.Services
 {
@@ -24,6 +22,21 @@ namespace InvoiceManagementTool.Core.Services
         public void AddClient(Client client)
         {
 
+        }
+
+        public void UpdateClient(Client client)
+        {
+
+        }
+
+        public void DeleteClient(int clientId)
+        {
+
+        }
+
+        public Client GetClientById(string identity)
+        {
+            return null;
         }
     }
 }

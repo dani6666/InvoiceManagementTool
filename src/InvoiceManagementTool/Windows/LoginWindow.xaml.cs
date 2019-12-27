@@ -1,16 +1,8 @@
 ﻿using InvoiceManagementTool.Infrastructure;
 using InvoiceManagementTool.WindowManagers.Login;
-using System;
-using System.Collections.Generic;
-using System.Text;
+using MySql.Data.MySqlClient;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace InvoiceManagementTool.Windows
 {
@@ -29,7 +21,7 @@ namespace InvoiceManagementTool.Windows
 
         private void LoginButton_Click(object sender, RoutedEventArgs e)
         {
-            new SqlDatabaseConnector().SendSelectCommand("afce", 2);
+            new SqlDatabaseConnector().SendSelectCommand(new MySqlCommand(), 2);
             if(_loginWindowManager.ExecuteLoginAction(LoginTextBox.Text, PasswordBox.Password))
             {
                 Close();

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace InvoiceManagementTool.Core.Model.Enums
+﻿namespace InvoiceManagementTool.Core.Model.Enums
 {
     public enum Roles
     {
