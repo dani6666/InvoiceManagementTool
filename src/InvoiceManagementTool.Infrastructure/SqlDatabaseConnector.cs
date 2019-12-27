@@ -1,4 +1,6 @@
-﻿using System;
+﻿using InvoiceManagementTool.Core.Interfaces;
+using MySql.Data.MySqlClient;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
@@ -6,9 +8,9 @@ using System.Text;
 
 namespace InvoiceManagementTool.Infrastructure
 {
-    public class SqlDatabaseConnector
+    public class SqlDatabaseConnector : ISqlDatabaseConnector
     {
-        private readonly SqlConnection _sqlConnection = new SqlConnection();
+        private readonly MySqlConnection _sqlConnection = new MySqlConnection();
 
         public void SetUpConnectionString(string connectionString)
         {
@@ -17,14 +19,14 @@ namespace InvoiceManagementTool.Infrastructure
             _sqlConnection.Open();
         }
 
-        public List<string[]> SendSelectCommand(SqlCommand sqlCommand, int columnCount)
+        public List<string[]> SendSelectCommand(MySqlCommand sqlCommand, int columnCount)
         {
             var result = new List<string[]>();
 
             sqlCommand.Connection = _sqlConnection;
             sqlCommand.CommandType = CommandType.Text;
 
-            SqlDataReader sqlDataReader = sqlCommand.ExecuteReader();
+            MySqlDataReader sqlDataReader = sqlCommand.ExecuteReader();
             while (sqlDataReader.Read())
             {
                 var row = new string[columnCount];

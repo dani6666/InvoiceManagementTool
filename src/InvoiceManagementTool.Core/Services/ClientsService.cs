@@ -1,24 +1,29 @@
 ﻿using InvoiceManagementTool.Core.Interfaces;
 using InvoiceManagementTool.Core.Interfaces.Services;
-using InvoiceManagementTool.Core.Model.Enums;
+using InvoiceManagementTool.Core.Model;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace InvoiceManagementTool.Core.Services
 {
-    public class UsersService : ILoginUserService
+    public class ClientsService : IClientsService
     {
         private readonly ISqlDatabaseConnector _sqlDatabaseConnector;
 
-        public UsersService(ISqlDatabaseConnector sqlDatabaseConnector)
+        public ClientsService(ISqlDatabaseConnector sqlDatabaseConnector)
         {
             _sqlDatabaseConnector = sqlDatabaseConnector;
         }
 
-        public Roles? ValidateUser(string login, string password)
+        public List<Client> GetAllClients()
         {
-            return Roles.Admin;
+            return null;
+        }
+
+        public void AddClient(Client client)
+        {
+
         }
     }
 }
