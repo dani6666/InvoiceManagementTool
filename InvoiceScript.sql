@@ -213,17 +213,25 @@ delimiter ;
 delimiter $$
 create procedure addProductToInvoice(in invoiceId int, in productId int, in amount int)
 begin
-    if ((select storageAmount from Products where id = productId) >= amount) then
-        insert into InvoiceProducts values (
-            productId,
-            invoiceId,
-            amount,
-            (select newPrice from ProductPrice where ProductPrice.productId = productId order by ProductPrice.dateOfChange desc limit 1)
+    set autocommit = 0;
+    start transaction;
+    
+    insert into InvoiceProducts values (
+        productId,
+        invoiceId,
+        amount,
+        (select newPrice from ProductPrice where ProductPrice.productId = productId order by ProductPrice.dateOfChange desc limit 1)
     );
-    else
+    update Products set storageAmount = (storageAmount - amount) where id = productId;
+    
+    if ((select storageAmount from Products where id = productId) < 0) then
+        rollback;
         signal sqlstate '45000';
+    else
+        commit;
     end if;
     
+    set autocommit = 1;
 end;$$
 delimiter ;
 
@@ -274,5 +282,13 @@ grant all privileges on InvoiceManagement.*
     
 grant execute on procedure InvoiceManagement.getRolePass
     to 'IMAccountFetcher'@'localhost' identified by 'accountFetcher';
+    
+insert into Roles (role, pass) values
+    ("cashier", "49778fc3d37abe24eedf7a29882370cd"),
+    ("accountant", "70905350353b3e6adb4b6a74bdc3f61a"),
+    ("manager", "23f525e04f07113367e233d4d6416b69"),
+    ("admin", "ceda392467dc055ce0cc55cd5a23e062");
+
+
 
 
