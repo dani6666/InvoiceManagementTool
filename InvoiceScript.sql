@@ -55,13 +55,14 @@ create table if not exists ProductPrice (
 create table if not exists Roles (
     id int not null auto_increment,
     role varchar(15) not null,
+    pass varchar(32) not null,
 
     primary key (id)
 );
 
 create table if not exists Credentials (
     userLogin varchar(20) not null,
-    userPassword varchar(20) not null,
+    userPassword varchar(32) not null,
     roleId int not null auto_increment,
 
     primary key (userLogin),
@@ -212,7 +213,17 @@ delimiter ;
 delimiter $$
 create procedure addProductToInvoice(in invoiceId int, in productId int, in amount int)
 begin
-    # todo
+    if ((select storageAmount from Products where id = productId) >= amount) then
+        insert into InvoiceProducts values (
+            productId,
+            invoiceId,
+            amount,
+            (select newPrice from ProductPrice where ProductPrice.productId = productId order by ProductPrice.dateOfChange desc limit 1)
+    );
+    else
+        signal sqlstate '45000';
+    end if;
+    
 end;$$
 delimiter ;
 
@@ -221,7 +232,11 @@ delimiter ;
 delimiter $$
 create procedure modifyProductPrice(in productId int, in newPrice int)
 begin
-    # todo
+    insert into ProductPrice values (
+        productId,
+        now(),
+        newPrice
+    );
 end;$$
 delimiter ;
 
@@ -230,7 +245,8 @@ delimiter ;
 delimiter $$
 create procedure getRolePass(in userLogin varchar(20), in userPassword varchar(20))
 begin
-    # todo
+    select role, pass from Roles inner join Credentials on Roles.id = Credentials.roleId
+    where Credentials.userLogin = userLogin and Credentials.userPassword = md5(userPassword);
 end;$$
 delimiter ;
 
