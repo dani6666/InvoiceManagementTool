@@ -209,4 +209,54 @@ delimiter ;
 
 
 
+delimiter $$
+create procedure addProductToInvoice(in invoiceId int, in productId int, in amount int)
+begin
+    # todo
+end;$$
+delimiter ;
+
+
+
+delimiter $$
+create procedure modifyProductPrice(in productId int, in newPrice int)
+begin
+    # todo
+end;$$
+delimiter ;
+
+
+
+delimiter $$
+create procedure getRolePass(in userLogin varchar(20), in userPassword varchar(20))
+begin
+    # todo
+end;$$
+delimiter ;
+
+
+
+grant insert on InvoiceManagement.Invoices
+    to 'IMCashier'@'localhost' identified by '49778fc3d37abe24eedf7a29882370cd';
+grant insert on InvoiceManagement.Clients
+    to 'IMCashier'@'localhost' identified by '49778fc3d37abe24eedf7a29882370cd';
+grant execute on procedure InvoiceManagement.addProductToInvoice
+    to 'IMCashier'@'localhost' identified by '49778fc3d37abe24eedf7a29882370cd';
+    
+grant select on InvoiceManagement.Invoices
+    to 'IMAccountant'@'localhost' identified by '70905350353b3e6adb4b6a74bdc3f61a';
+grant select on InvoiceManagement.Products
+    to 'IMAccountant'@'localhost' identified by '70905350353b3e6adb4b6a74bdc3f61a';
+    
+grant all privileges on InvoiceManagement.Products
+    to 'IMManager'@'localhost' identified by '23f525e04f07113367e233d4d6416b69';
+grant execute on procedure InvoiceManagement.modifyProductPrice
+    to 'IMManager'@'localhost' identified by '23f525e04f07113367e233d4d6416b69';
+    
+grant all privileges on InvoiceManagement.*
+    to 'IMAdmin'@'localhost' identified by 'ceda392467dc055ce0cc55cd5a23e062';
+    
+grant execute on procedure InvoiceManagement.getRolePass
+    to 'IMAccountFetcher'@'localhost' identified by 'accountFetcher';
+
 
