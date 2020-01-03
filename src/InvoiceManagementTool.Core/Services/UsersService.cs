@@ -17,7 +17,13 @@ namespace InvoiceManagementTool.Core.Services
 
         public Roles? ValidateUser(string login, string password)
         {
+            _sqlDatabaseConnector.SetUpConnectionString("constr");
             return Roles.Admin;
+        }
+
+        public void InitializeConnection()
+        {
+            _sqlDatabaseConnector.SetUpConnectionString("constr");
         }
 
         public List<User> GetAllUsers()
@@ -28,6 +34,16 @@ namespace InvoiceManagementTool.Core.Services
         public User GetUserByLogin(string userLogin)
         {
             return null;
+        }
+
+        public void AddUser(User user)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public void UpdateUser(User user, string lastUserLogin)
+        {
+            throw new System.NotImplementedException();
         }
     }
 }

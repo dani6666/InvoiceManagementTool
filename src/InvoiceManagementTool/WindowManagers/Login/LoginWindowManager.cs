@@ -1,28 +1,27 @@
 ﻿using InvoiceManagementTool.Core.Interfaces.Services;
 using InvoiceManagementTool.Core.Model.Enums;
 using InvoiceManagementTool.Windows;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Windows;
 
 namespace InvoiceManagementTool.WindowManagers.Login
 {
     public class LoginWindowManager : ILoginWindowManager
     {
-        private readonly ILoginUserService _loginAccountService;
+        private readonly ILoginUserService _loginUserService;
         private readonly IWindowNavigator _windowNavigator;
-        public LoginWindowManager(ILoginUserService loginAccountService, IWindowNavigator windowNavigator)
+        public LoginWindowManager(ILoginUserService loginUserService, IWindowNavigator windowNavigator)
         {
-            _loginAccountService = loginAccountService;
+            _loginUserService = loginUserService;
             _windowNavigator = windowNavigator;
+
+            _loginUserService.InitializeConnection();
         }
 
         public bool ExecuteLoginAction(string login, string password)
         {
             if (login.Length > 0 && password.Length > 0)
             {
-                var userRole = _loginAccountService.ValidateUser(login, password);
+                var userRole = _loginUserService.ValidateUser(login, password);
 
                 switch (userRole)
                 {

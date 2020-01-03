@@ -24,12 +24,12 @@ namespace InvoiceManagementTool.Core.Services
 
         }
 
-        public void UpdateClient(Client client)
+        public void UpdateClient(Client client, string lastIdentity)
         {
 
         }
 
-        public void DeleteClient(int clientId)
+        public void DeleteClient(string clientIdentity)
         {
 
         }
