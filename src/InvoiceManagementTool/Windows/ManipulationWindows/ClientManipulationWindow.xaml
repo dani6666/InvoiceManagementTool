@@ -5,8 +5,31 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:InvoiceManagementTool.Windows"
         mc:Ignorable="d"
-        Title="ClientManipulationWindow" Height="450" Width="800">
+        Title="Add client" Height="210" Width="265">
     <Grid>
-        
+        <StackPanel Margin="0,2,0,-2">
+            <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
+                <TextBlock Width="90" Text="Client PESEL/NIP" TextAlignment="Center" Margin="20,0,0,0"/>
+                <TextBox Name="IdentityTextBox" Text="" TextWrapping="Wrap" Width="120" Margin="15,0,0,0"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
+                <TextBlock Width="90" Text="Client name" TextAlignment="Center" Margin="20,0,0,0"/>
+                <TextBox Name="NameTextBox" Text="" TextWrapping="Wrap" Width="120" Margin="15,0,0,0"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
+                <TextBlock Width="90" Text="Client surname" TextAlignment="Center" Margin="20,0,0,0"/>
+                <TextBox Name="SurnameTextBox" Text="" TextWrapping="Wrap" Width="120" Margin="15,0,0,0"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
+                <TextBlock Width="90" Text="Date of birth" TextAlignment="Center" Margin="20,0,0,0"/>
+                <DatePicker Name="BirthDatePicker" Width="120" Margin="15,0,0,0"/>
+
+                <!--<TextBox Name="BirthTextBox" Text="" TextWrapping="Wrap" Width="120" Margin="15,0,0,0"/>-->
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <Button Name="CancelButton" Content="Cancel" Width="100" HorizontalAlignment="Center" Margin="20,20,0,0" Click="CancelButton_Click"/>
+                <Button Name="ApplyButton" Content="Add client" Width="100" HorizontalAlignment="Center" Margin="20,20,0,0" Click="UpdateButton_Click"/>
+            </StackPanel>
+        </StackPanel>
     </Grid>
 </Window>

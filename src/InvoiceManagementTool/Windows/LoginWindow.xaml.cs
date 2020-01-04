@@ -1,6 +1,4 @@
-﻿using InvoiceManagementTool.Infrastructure;
-using InvoiceManagementTool.WindowManagers.Login;
-using MySql.Data.MySqlClient;
+﻿using InvoiceManagementTool.WindowManagers.Login;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -21,7 +19,6 @@ namespace InvoiceManagementTool.Windows
 
         private void LoginButton_Click(object sender, RoutedEventArgs e)
         {
-            new SqlDatabaseConnector().SendSelectCommand(new MySqlCommand(), 2);
             if(_loginWindowManager.ExecuteLoginAction(LoginTextBox.Text, PasswordBox.Password))
             {
                 Close();

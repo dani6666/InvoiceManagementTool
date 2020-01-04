@@ -1,5 +1,4 @@
-﻿using InvoiceManagementTool.Core.Model;
-using InvoiceManagementTool.Windows.DisplayWindows;
+﻿using InvoiceManagementTool.Windows.DisplayWindows;
 using InvoiceManagementTool.Windows.ManipulationWindows;
 using System.Windows;
 
@@ -35,17 +34,17 @@ namespace InvoiceManagementTool.Windows
 
         private void AddInvoiceButton_Click(object sender, RoutedEventArgs e)
         {
-            _windowNavigator.ShowDialogWithParam<InvoiceManipulationWindow, Invoice>(null);
+            _windowNavigator.ShowDialog<InvoiceManipulationWindow>();
         }
 
         private void AddClietButton_Click(object sender, RoutedEventArgs e)
         {
-            _windowNavigator.ShowDialogWithParam<InvoiceManipulationWindow, Invoice>(null);
+            _windowNavigator.ShowDialog<InvoiceManipulationWindow>();
         }
 
         private void AddProductButton_Click(object sender, RoutedEventArgs e)
         {
-            _windowNavigator.ShowDialogWithParam<ProductManipulationWindow, Product>(null);
+            _windowNavigator.ShowDialog<ProductManipulationWindow>();
         }
 
         private void ShowUsersButton_Click(object sender, RoutedEventArgs e)
@@ -60,7 +59,7 @@ namespace InvoiceManagementTool.Windows
 
         private void AddUserButton_Click(object sender, RoutedEventArgs e)
         {
-            _windowNavigator.ShowDialogWithParam<UserMaipulationWindow, User>(null);
+            _windowNavigator.ShowDialog<UserMaipulationWindow>();
         }
 
         private void RestoreDatabaseButton_Click(object sender, RoutedEventArgs e)

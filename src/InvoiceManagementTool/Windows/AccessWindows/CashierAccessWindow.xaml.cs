@@ -1,5 +1,4 @@
-﻿using InvoiceManagementTool.Core.Model;
-using System.Windows;
+﻿using System.Windows;
 
 namespace InvoiceManagementTool.Windows
 {
@@ -12,16 +11,18 @@ namespace InvoiceManagementTool.Windows
         public CashierAccessWindow(IWindowNavigator windowNavigator)
         {
             InitializeComponent();
+
+            _windowNavigator = windowNavigator;
         }
 
         private void ClientButton_Click(object sender, RoutedEventArgs e)
         {
-            _windowNavigator.ShowDialogWithParam<ClientManipulationWindow, Client>(null);
+            _windowNavigator.ShowDialog<ClientManipulationWindow>();
         }
 
         private void InvoiceButton_Click(object sender, RoutedEventArgs e)
         {
-            _windowNavigator.ShowDialogWithParam<InvoiceManipulationWindow, Invoice>(null);
+            _windowNavigator.ShowDialog<InvoiceManipulationWindow>();
         }
     }
 }

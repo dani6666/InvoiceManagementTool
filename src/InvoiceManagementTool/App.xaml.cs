@@ -2,9 +2,6 @@
 using InvoiceManagementTool.Core.Interfaces.Services;
 using InvoiceManagementTool.Core.Services;
 using InvoiceManagementTool.Infrastructure;
-using InvoiceManagementTool.WindowManagers.DisplayClientsList;
-using InvoiceManagementTool.WindowManagers.DisplayProductsList;
-using InvoiceManagementTool.WindowManagers.DisplayUsersList;
 using InvoiceManagementTool.WindowManagers.Login;
 using InvoiceManagementTool.Windows;
 using InvoiceManagementTool.Windows.DisplayWindows;
@@ -37,20 +34,17 @@ namespace InvoiceManagementTool
                 .AddSingleton<ManagerAccessWindow>()
                 .AddSingleton<AccountantAccessWindow>()
 
-                .AddSingleton<DisplayClientsListWindowManager>()
-                .AddSingleton<DisplayProductsListWindowManager>()
-                .AddSingleton<DisplayInvoicesListWindow>()
-                .AddSingleton<DisplayUsersListWindow>()
+                .AddTransient<DisplayInvoicesListWindow>()
+                .AddTransient<DisplayUsersListWindow>()
+                .AddTransient<DisplayClientsListWindow>()
+                .AddTransient<DisplayProductsListWindow>()
 
-                .AddSingleton<ClientManipulationWindow>()
-                .AddSingleton<InvoiceManipulationWindow>()
-                .AddSingleton<ProductManipulationWindow>()
-                .AddSingleton<UserMaipulationWindow>()
+                .AddTransient<ClientManipulationWindow>()
+                .AddTransient<InvoiceManipulationWindow>()
+                .AddTransient<ProductManipulationWindow>()
+                .AddTransient<UserMaipulationWindow>()
 
                 .AddTransient<ILoginWindowManager, LoginWindowManager>()
-                .AddTransient<IDisplayClientsListWindowManager, DisplayClientsListWindowManager>()
-                .AddTransient<IDisplayProductsListWindowManager, DisplayProductsListWindowManager>()
-                .AddTransient<IDisplayUsersListWindowManager, DisplayUsersListWindowManager>()
 
                 .AddTransient<ISqlDatabaseConnector, SqlDatabaseConnector>()
                 .AddTransient<ISqlDatabaseConnector, SqlDatabaseConnector>()
@@ -63,10 +57,11 @@ namespace InvoiceManagementTool
 
                 .AddSingleton<IWindowNavigator, WindowNavigator>()
                 .AddTransient<ILoginUserService, UsersService>()
+                .AddTransient<IEditUsersService, UsersService>()
                 .AddTransient<IClientsService, ClientsService>()
                 .AddTransient<IProductsService, ProductsService>()
                 .AddTransient<IInvoicesService, InvoicesService>()
-                .AddTransient<ISqlDatabaseConnector, SqlDatabaseConnector>();
+                .AddSingleton<ISqlDatabaseConnector, SqlDatabaseConnector>();
         }
 
         private void OnStartup(object sender, StartupEventArgs e)

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace InvoiceManagementTool.WindowManagers.Login
+﻿namespace InvoiceManagementTool.WindowManagers.Login
 {
     public interface ILoginWindowManager
     {

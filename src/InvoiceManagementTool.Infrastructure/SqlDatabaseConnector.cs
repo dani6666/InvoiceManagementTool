@@ -30,11 +30,13 @@ namespace InvoiceManagementTool.Infrastructure
 
                 for (int i = 0; i < columnCount; i++)
                 {
-                    row[i] = sqlDataReader.GetString(i + 1);
+                    row[i] = sqlDataReader.GetString(i);
                 }
 
                 result.Add(row);
             }
+
+            sqlDataReader.Close();
 
             return result;
         }

@@ -1,17 +1,6 @@
-﻿using InvoiceManagementTool.Core.Model;
-using InvoiceManagementTool.Windows.DisplayWindows;
+﻿using InvoiceManagementTool.Windows.DisplayWindows;
 using InvoiceManagementTool.Windows.ManipulationWindows;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace InvoiceManagementTool.Windows
 {
@@ -35,7 +24,7 @@ namespace InvoiceManagementTool.Windows
 
         private void AddProductButton_Click(object sender, RoutedEventArgs e)
         {
-            _windowNavigator.ShowDialogWithParam<ProductManipulationWindow, Product>(null);
+            _windowNavigator.ShowDialog<ProductManipulationWindow>();
         }
     }
 }
