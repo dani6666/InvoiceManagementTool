@@ -1,4 +1,6 @@
-﻿using InvoiceManagementTool.WindowManagers.DisplayProductsList;
+﻿using InvoiceManagementTool.Core.Interfaces.Services;
+using InvoiceManagementTool.Core.Model;
+using InvoiceManagementTool.Windows.ManipulationWindows;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -10,14 +12,16 @@ namespace InvoiceManagementTool.Windows.DisplayWindows
     /// </summary>
     public partial class DisplayProductsListWindow : Window
     {
-        private readonly IDisplayProductsListWindowManager _displayProductsListWindowManager;
-        public DisplayProductsListWindow(IDisplayProductsListWindowManager displayProductsListWindowManager)
+        private readonly IProductsService _productsService;
+        private readonly IWindowNavigator _windowNavigator;
+        public DisplayProductsListWindow(IProductsService productsService, IWindowNavigator windowNavigator)
         {
             InitializeComponent();
 
-            _displayProductsListWindowManager = displayProductsListWindowManager;
+            _productsService = productsService;
+            _windowNavigator = windowNavigator;
 
-            foreach (var product in _displayProductsListWindowManager.GetAllProducts())
+            foreach (var product in _productsService.GetAllProducts())
             {
                 var panel = new StackPanel();
                 panel.Children.Add(new TextBlock()
@@ -39,7 +43,12 @@ namespace InvoiceManagementTool.Windows.DisplayWindows
         {
             var productId = int.Parse(((StackPanel)sender).Name);
 
-            _displayProductsListWindowManager.OpenEditProductWindow(productId);
+            var product = _productsService.GetProductById(productId);
+
+            if (product != null)
+            {
+                _windowNavigator.ShowDialogWithParam<ProductManipulationWindow, Product>(product);
+            }
         }
     }
 }

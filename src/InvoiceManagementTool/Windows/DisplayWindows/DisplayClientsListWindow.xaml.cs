@@ -1,4 +1,5 @@
-﻿using InvoiceManagementTool.WindowManagers.DisplayClientsList;
+﻿using InvoiceManagementTool.Core.Interfaces.Services;
+using InvoiceManagementTool.Core.Model;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -10,14 +11,16 @@ namespace InvoiceManagementTool.Windows.DisplayWindows
     /// </summary>
     public partial class DisplayClientsListWindow : Window
     {
-        private readonly IDisplayClientsListWindowManager _displayClientsListWindowManager;
-        public DisplayClientsListWindow(IDisplayClientsListWindowManager displayClientsListWindowManager)
+        private readonly IClientsService _clientsService;
+        private readonly IWindowNavigator _windowNavigator;
+        public DisplayClientsListWindow(IClientsService clientsService, IWindowNavigator windowNavigator)
         {
             InitializeComponent();
 
-            _displayClientsListWindowManager = displayClientsListWindowManager;
+            _clientsService = clientsService;
+            _windowNavigator = windowNavigator;
 
-            foreach (var client in _displayClientsListWindowManager.GetAllClients())
+            foreach (var client in _clientsService.GetAllClients())
             {
                 var panel = new StackPanel();
                 panel.Children.Add(new TextBlock()
@@ -46,7 +49,12 @@ namespace InvoiceManagementTool.Windows.DisplayWindows
         {
             var clientId = ((TextBlock)((StackPanel)sender).Children[0]).Text;
 
-            _displayClientsListWindowManager.OpenEditClientWindow(clientId);
+            var client = _clientsService.GetClientById(clientId);
+
+            if (client != null)
+            {
+                _windowNavigator.ShowDialogWithParam<ClientManipulationWindow, Client>(client);
+            }
         }
     }
 }

@@ -1,5 +1,7 @@
-﻿using InvoiceManagementTool.Core.Model.Enums;
-using InvoiceManagementTool.WindowManagers.DisplayUsersList;
+﻿using InvoiceManagementTool.Core.Interfaces.Services;
+using InvoiceManagementTool.Core.Model;
+using InvoiceManagementTool.Core.Model.Enums;
+using InvoiceManagementTool.Windows.ManipulationWindows;
 using System;
 using System.Windows;
 using System.Windows.Controls;
@@ -12,14 +14,17 @@ namespace InvoiceManagementTool.Windows.DisplayWindows
     /// </summary>
     public partial class DisplayUsersListWindow : Window
     {
-        private readonly IDisplayUsersListWindowManager _displayUsersListWindowManager;
-        public DisplayUsersListWindow(IDisplayUsersListWindowManager displayUsersListWindowManager)
+        private readonly IEditUsersService _editUsersService;
+        private readonly IWindowNavigator _windowNavigator;
+
+        public DisplayUsersListWindow(IEditUsersService editUsersService, IWindowNavigator windowNavigator)
         {
             InitializeComponent();
 
-            _displayUsersListWindowManager = displayUsersListWindowManager;
+            _editUsersService = editUsersService;
+            _windowNavigator = windowNavigator;
 
-            foreach (var user in _displayUsersListWindowManager.GetAllUsers())
+            foreach (var user in _editUsersService.GetAllUsers())
             {
                 var panel = new StackPanel();
                 panel.Children.Add(new TextBlock()
@@ -40,7 +45,12 @@ namespace InvoiceManagementTool.Windows.DisplayWindows
         {
             var userLogin = ((TextBlock)((StackPanel) sender).Children[0]).Text;
 
-            _displayUsersListWindowManager.OpenEditUserWindow(userLogin);
+            var user = _editUsersService.GetUserByLogin(userLogin);
+
+            if (user != null)
+            {
+                _windowNavigator.ShowDialogWithParam<UserMaipulationWindow, User>(user);
+            }
         }
     }
 }
