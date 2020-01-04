@@ -284,10 +284,10 @@ grant execute on procedure InvoiceManagement.getRolePass
     to 'IMAccountFetcher'@'localhost' identified by 'accountFetcher';
     
 insert into Roles (role, pass) values
-    ("cashier", "49778fc3d37abe24eedf7a29882370cd"),
-    ("accountant", "70905350353b3e6adb4b6a74bdc3f61a"),
-    ("manager", "23f525e04f07113367e233d4d6416b69"),
-    ("admin", "ceda392467dc055ce0cc55cd5a23e062");
+    ("Cashier", "49778fc3d37abe24eedf7a29882370cd"),
+    ("Accountant", "70905350353b3e6adb4b6a74bdc3f61a"),
+    ("Manager", "23f525e04f07113367e233d4d6416b69"),
+    ("Admin", "ceda392467dc055ce0cc55cd5a23e062");
 
 
 
