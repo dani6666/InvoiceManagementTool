@@ -45,6 +45,8 @@ namespace InvoiceManagementTool.Windows
             {
                 _clientsService.AddClient(client);
             }
+
+            Close();
         }
 
         private void CancelButton_Click(object sender, System.Windows.RoutedEventArgs e)

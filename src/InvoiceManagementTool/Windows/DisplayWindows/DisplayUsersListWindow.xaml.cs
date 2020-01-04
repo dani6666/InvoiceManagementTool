@@ -26,14 +26,20 @@ namespace InvoiceManagementTool.Windows.DisplayWindows
 
             foreach (var user in _editUsersService.GetAllUsers())
             {
-                var panel = new StackPanel();
+                var panel = new StackPanel
+                {
+                    Orientation = Orientation.Horizontal
+                };
+
                 panel.Children.Add(new TextBlock()
                 {
-                    Text = user.Login
+                    Text = user.Login,
+                    Width = 90
                 });
                 panel.Children.Add(new TextBlock()
                 {
-                    Text = Enum.GetName(typeof(Roles), user.Role)
+                    Text = Enum.GetName(typeof(Roles), user.Role),
+                    Margin = new Thickness(10,0,0,0)
                 });
                 panel.MouseLeftButtonDown += Row_Click;
 
@@ -43,7 +49,7 @@ namespace InvoiceManagementTool.Windows.DisplayWindows
 
         private void Row_Click(object sender, MouseButtonEventArgs e)
         {
-            var userLogin = ((TextBlock)((StackPanel) sender).Children[0]).Text;
+            var userLogin = ((TextBlock)((StackPanel)sender).Children[0]).Text;
 
             var user = _editUsersService.GetUserByLogin(userLogin);
 

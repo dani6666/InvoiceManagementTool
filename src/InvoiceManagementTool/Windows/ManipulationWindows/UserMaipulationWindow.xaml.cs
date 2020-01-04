@@ -51,6 +51,10 @@ namespace InvoiceManagementTool.Windows.ManipulationWindows
             {
                 _editUsersService.AddUser(user);
             }
+
+            MessageBox.Show("Operation completed");
+
+            Close();
         }
 
         private void CancelButton_Click(object sender, RoutedEventArgs e)

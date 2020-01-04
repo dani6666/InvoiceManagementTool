@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:InvoiceManagementTool.Windows"
         mc:Ignorable="d"
-        Title="AdminAccessWindow" Height="160" Width="470">
+        Title="AdminAccessWindow" Height="160" Width="475">
     <Grid>
         <StackPanel Orientation="Horizontal">
             <StackPanel Margin="15,0,0,10" VerticalAlignment="Center">
