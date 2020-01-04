@@ -1,6 +1,7 @@
 ﻿using InvoiceManagementTool.Core.Interfaces;
 using InvoiceManagementTool.Core.Interfaces.Services;
 using InvoiceManagementTool.Core.Model;
+using MySql.Data.MySqlClient;
 using System.Collections.Generic;
 
 namespace InvoiceManagementTool.Core.Services
@@ -16,7 +17,20 @@ namespace InvoiceManagementTool.Core.Services
 
         public List<Invoice> GetAllInvoices()
         {
-            return null;
+            var invoices = new List<Invoice>();
+
+            var sqlCommand = new MySqlCommand("SELECT ");
+
+            var invoicesStrings = _sqlDatabaseConnector.SendSelectCommand(sqlCommand, 2);
+
+            foreach (var invoicesString in invoicesStrings)
+            {
+                var invoice = new Invoice();
+
+                invoices.Add(invoice);
+            }
+
+            return invoices;
         }
 
         public void AddInvoice(Invoice invoice)

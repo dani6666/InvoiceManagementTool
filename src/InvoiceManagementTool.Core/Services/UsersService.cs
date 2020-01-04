@@ -52,7 +52,20 @@ namespace InvoiceManagementTool.Core.Services
 
         public User GetUserByLogin(string userLogin)
         {
-            return null;
+            var sqlCommand = new MySqlCommand("SELECT userLogin, userPassword, role FROM Credentials" +
+                                              " INNER JOIN Roles ON Credentials.roleId = Roles.id" +
+                                              $" WHERE userLogin = \"{userLogin}\"");
+
+            var usersString = _sqlDatabaseConnector.SendSelectCommand(sqlCommand, 2)[0];
+
+            var user = new User
+            {
+                Login = usersString[0],
+                Password = usersString[1],
+                Role = Enum.Parse<Roles>(usersString[2])
+            };
+
+            return user;
         }
 
         public void AddUser(User user)
@@ -61,8 +74,8 @@ namespace InvoiceManagementTool.Core.Services
                                                        $" (\"{user.Login}\", \"{user.Password}\", " +
                                                        "(" +
                                                        " SELECT id FROM Roles" +
-                                                       " WHERE role = \"" + user.Role +"\"" +
-                                                       " LIMIT 1"+
+                                                       $" WHERE role = \"{user.Role}\"" +
+                                                       " LIMIT 1" +
                                                        " ))");
 
             _sqlDatabaseConnector.SendExecutableCommand(sqlCommand);
@@ -70,7 +83,18 @@ namespace InvoiceManagementTool.Core.Services
 
         public void UpdateUser(User user, string lastUserLogin)
         {
-            throw new System.NotImplementedException();
+            MySqlCommand sqlCommand = new MySqlCommand("UPDATE Credentials SET" +
+                                                       $" userLogin=\"{user.Login}\"," +
+                                                       $" userPassword=\"{user.Password}\"," +
+                                                       $" roleId= " +
+                                                       "(" +
+                                                       " SELECT id FROM Roles" +
+                                                       $" WHERE role = \"{user.Role}\"" +
+                                                       " LIMIT 1" +
+                                                       " )" +
+                                                       $" WHERE userLogin = \"{lastUserLogin}\"");
+
+            _sqlDatabaseConnector.SendExecutableCommand(sqlCommand);
         }
     }
 }
