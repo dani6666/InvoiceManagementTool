@@ -45,7 +45,7 @@ create table InvoiceProducts (
 create table ProductPrice (
     productId int not null,
     dateOfChange datetime not null,
-    newPrice int not null,
+    newPrice float not null,
 
     primary key (productId, dateOfChange),
     foreign key fk_ProductPrice_productId (productId) references Products (id) on delete cascade
@@ -242,7 +242,7 @@ delimiter ;
 
 
 delimiter $$
-create procedure addProduct(in name varchar(50), in amountInStock int, in startingPrice)
+create procedure addProduct(in name varchar(50), in amountInStock int, in startingPrice float)
 begin
     insert ignore into Products (name, storageAmount) values (
         name,
@@ -269,7 +269,7 @@ end;$$
 delimiter ;
 
 delimiter $$
-create procedure modifyProductPrice(in productId int, in newPrice int)
+create procedure modifyProductPrice(in productId int, in newPrice float)
 begin
     insert ignore into ProductPrice values (
         productId,
