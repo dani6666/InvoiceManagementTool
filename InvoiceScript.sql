@@ -37,7 +37,7 @@ create table if not exists InvoiceProducts (
     priceAtTheTime float not null,
 
     primary key (invoiceId, productid),
-    foreign key fk_InvoiceProducts_invoiceId (invoiceId) references Invoices (id) on delete Cascade,
+    foreign key fk_InvoiceProducts_invoiceId (invoiceId) references Invoices (id) on delete cascade,
     foreign key fk_InvoiceProducts_productId (productId) references Products (id) on delete cascade
 );
 
@@ -226,12 +226,13 @@ begin
     
     if ((select storageAmount from Products where id = productId) < 0) then
         rollback;
+        set autocommit = 1;
         signal sqlstate '45000';
     else
         commit;
+        set autocommit = 1;
     end if;
     
-    set autocommit = 1;
 end;$$
 delimiter ;
 
