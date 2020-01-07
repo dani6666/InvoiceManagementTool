@@ -5,6 +5,8 @@ use InvoiceManagement;
 
 
 
+
+
 create table Clients (
     id varchar(11) not null,
     name varchar(20) not null,
@@ -69,6 +71,24 @@ create table Credentials (
     primary key (userLogin),
     foreign key fk_Credentials_roleId (roleId) references Roles (id) on delete cascade
 );
+
+
+
+
+
+delimiter $$
+create function getProductPriceAtDate(id int, priceDate dateTime) returns float
+begin
+    return (
+        select newPrice from ProductPrice
+        where productId = id
+        and dateOfChange <= priceDate
+        order by dateOfChange desc
+        limit 1
+    );
+end;$$
+delimiter ;
+
 
 
 
@@ -139,7 +159,7 @@ delimiter ;
 
 
 delimiter $$
-create trigger wasClient18OnDateOfIssueAndDateOfIssueNotFromFutureInsert before insert on Invoices
+create trigger wasClient18OnDateOfIssueAndDOINotFromFutureInsert before insert on Invoices
 for each row
 begin
     if (
@@ -153,7 +173,7 @@ end;$$
 delimiter ;
 
 delimiter $$
-create trigger wasClient18OnDateOfIssueAndDateOfIssueNotFromFutureUpdate before update on Invoices
+create trigger Client18OnDateOfIssueAndDOINotFromFuturePlusMatchPriceUpdate before update on Invoices
 for each row
 begin
     if (
@@ -163,8 +183,13 @@ begin
     ) then
         signal sqlstate '45000';
     end if;
+    
+    update InvoiceProducts inner join Invoice on InvoiceProducts.invoiceId = Invoices.id
+    set priceAtTheTime = getProductPriceAtDate(productId, new.dateOfIssue)
+    where id = new.id;
 end;$$
 delimiter ;
+
 
 
 delimiter $$
@@ -262,9 +287,8 @@ delimiter ;
 delimiter $$
 create procedure getProduct(in id int, in priceDate datetime)
 begin
-    select Products.*, ProductPrice.newPrice as price
-    from Products inner join ProductPrice on Products.id = ProductPrice.productId
-    where ProductPrice.dateOfChange < priceDate;
+    select Products.*, getProductPriceAtDate(id, dateTime)
+    from Products where Products.id = id;
 end;$$
 delimiter ;
 
@@ -284,7 +308,6 @@ delimiter ;
 
 
 
-
 delimiter $$
 create procedure getRolePass(in userLogin varchar(20), in userPassword varchar(20))
 begin
@@ -292,6 +315,9 @@ begin
     where Credentials.userLogin = userLogin and Credentials.userPassword = md5(userPassword);
 end;$$
 delimiter ;
+
+
+
 
 
 grant select, insert on InvoiceManagement.Clients
@@ -335,11 +361,16 @@ grant execute on InvoiceManagement.*
 grant execute on procedure InvoiceManagement.getRolePass
     to 'IMAccountFetcher'@'localhost' identified by 'accountFetcher';
     
+    
+   
+    
+    
 insert into Roles (role, pass) values
     ("Cashier", "49778fc3d37abe24eedf7a29882370cd"),
     ("Accountant", "70905350353b3e6adb4b6a74bdc3f61a"),
     ("Manager", "23f525e04f07113367e233d4d6416b69"),
     ("Admin", "ceda392467dc055ce0cc55cd5a23e062");
+
 
 
 
