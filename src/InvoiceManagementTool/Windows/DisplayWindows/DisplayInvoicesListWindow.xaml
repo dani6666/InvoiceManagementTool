@@ -7,6 +7,8 @@
         mc:Ignorable="d"
         Title="DisplayInvoicesListWindow" Height="450" Width="800">
     <Grid>
-        
+        <StackPanel Name="InvoicesStackPanel">
+
+        </StackPanel>
     </Grid>
 </Window>

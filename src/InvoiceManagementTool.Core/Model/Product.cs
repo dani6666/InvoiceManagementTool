@@ -6,5 +6,10 @@
         public string Name { get; set; }
         public int StorageAmount { get; set; }
         public float Price { get; set; }
+
+        public override string ToString()
+        {
+            return Name;
+        }
     }
 }

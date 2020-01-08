@@ -31,7 +31,7 @@ namespace InvoiceManagementTool.Core.Services
                     Identity = clientsString[0],
                     Name= clientsString[1],
                     SurName = clientsString[2],
-                    DateOfBirth = DateTime.Parse(clientsString[0])
+                    DateOfBirth = DateTime.Parse(clientsString[3])
                 };
 
                 clients.Add(client);
@@ -42,12 +42,22 @@ namespace InvoiceManagementTool.Core.Services
 
         public void AddClient(Client client)
         {
+            var sqlCommand = new MySqlCommand("INSERT INTO Clients (id, name, surname, dateOfBirth) VALUES " +
+                                              $" (\'{client.Identity}\', \'{client.Name}\', \'{client.SurName}\', \'{client.DateOfBirth.ToString("yyyy-MM-dd")}\')");
 
+            _sqlDatabaseConnector.SendExecutableCommand(sqlCommand);
         }
 
         public void UpdateClient(Client client, string lastIdentity)
         {
+            MySqlCommand sqlCommand = new MySqlCommand("UPDATE Clients SET" +
+                                                       $" id=\'{client.Identity}\'," +
+                                                       $" name=\'{client.Name}\'," +
+                                                       $" surname=\'{client.SurName}\'," +
+                                                       $" dateOfBirth=\'{client.DateOfBirth.ToString("yyyy-MM-dd")}\'" +
+                                                       $" WHERE id=\'{lastIdentity}\'");
 
+            _sqlDatabaseConnector.SendExecutableCommand(sqlCommand);
         }
 
         public void DeleteClient(string clientIdentity)
@@ -57,7 +67,20 @@ namespace InvoiceManagementTool.Core.Services
 
         public Client GetClientById(string identity)
         {
-            return null;
+            var sqlCommand = new MySqlCommand("SELECT id, name, surname, dateOfBirth FROM Clients" +
+                                              $" WHERE id=\'{identity}\'");
+
+            var usersString = _sqlDatabaseConnector.SendSelectCommand(sqlCommand, 4)[0];
+
+            var client = new Client
+            {
+                Identity= usersString[0],
+                Name = usersString[1],
+                SurName = usersString[2],
+                DateOfBirth = DateTime.Parse(usersString[3])
+            };
+
+            return client;
         }
     }
 }

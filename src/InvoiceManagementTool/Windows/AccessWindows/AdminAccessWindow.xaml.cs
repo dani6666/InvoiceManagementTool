@@ -39,7 +39,7 @@ namespace InvoiceManagementTool.Windows
 
         private void AddClietButton_Click(object sender, RoutedEventArgs e)
         {
-            _windowNavigator.ShowDialog<InvoiceManipulationWindow>();
+            _windowNavigator.ShowDialog<ClientManipulationWindow>();
         }
 
         private void AddProductButton_Click(object sender, RoutedEventArgs e)

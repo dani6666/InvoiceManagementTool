@@ -56,7 +56,7 @@ namespace InvoiceManagementTool.Core.Services
                                               " INNER JOIN Roles ON Credentials.roleId = Roles.id" +
                                               $" WHERE userLogin = \"{userLogin}\"");
 
-            var usersString = _sqlDatabaseConnector.SendSelectCommand(sqlCommand, 2)[0];
+            var usersString = _sqlDatabaseConnector.SendSelectCommand(sqlCommand, 3)[0];
 
             var user = new User
             {
@@ -86,7 +86,7 @@ namespace InvoiceManagementTool.Core.Services
             MySqlCommand sqlCommand = new MySqlCommand("UPDATE Credentials SET" +
                                                        $" userLogin=\"{user.Login}\"," +
                                                        $" userPassword=\"{user.Password}\"," +
-                                                       $" roleId= " +
+                                                       " roleId= " +
                                                        "(" +
                                                        " SELECT id FROM Roles" +
                                                        $" WHERE role = \"{user.Role}\"" +
