@@ -1,10 +1,13 @@
 
-create database if not exists InvoiceManagement;
+drop database if exists InvoiceManagement;
+create database InvoiceManagement;
 use InvoiceManagement;
 
 
 
-create table if not exists Clients (
+
+
+create table Clients (
     id varchar(11) not null,
     name varchar(20) not null,
     surname varchar(20) not null,
@@ -13,46 +16,46 @@ create table if not exists Clients (
     primary key (id)
 );
 
-create table if not exists Invoices (
+create table Invoices (
     id int not null auto_increment,
     clientId varchar(11) not null,
     dateOfIssue datetime not null,
 
     primary key (id),
-    foreign key fk_Invoices_clientId (clientId) references Clients(id) on delete cascade
+    foreign key fk_Invoices_clientId (clientId) references Clients(id) on delete cascade on update cascade
 );
 
-create table if not exists Products (
+create table Products (
     id int not null auto_increment,
-    name varchar(50) not null,
+    name varchar(50) not null unique,
     storageAmount int not null,
 
     primary key (id)
 );
 
-create table if not exists InvoiceProducts (
+create table InvoiceProducts (
     productId int not null,
     invoiceId int not null,
     amount int not null,
     priceAtTheTime float not null,
 
     primary key (invoiceId, productid),
-    foreign key fk_InvoiceProducts_invoiceId (invoiceId) references Invoices (id) on delete Cascade,
-    foreign key fk_InvoiceProducts_productId (productId) references Products (id) on delete cascade
+    foreign key fk_InvoiceProducts_invoiceId (invoiceId) references Invoices (id) on delete cascade on update cascade,
+    foreign key fk_InvoiceProducts_productId (productId) references Products (id) on delete cascade on update cascade
 );
 
-create table if not exists ProductPrice (
+create table ProductPrice (
     productId int not null,
     dateOfChange datetime not null,
-    newPrice int not null,
+    newPrice float not null,
 
     primary key (productId, dateOfChange),
     foreign key fk_ProductPrice_productId (productId) references Products (id) on delete cascade
 );
+create index ProductPrice_dateOfChange using btree on ProductPrice (dateOfChange);
 
 
-
-create table if not exists Roles (
+create table Roles (
     id int not null auto_increment,
     role varchar(15) not null,
     pass varchar(32) not null,
@@ -60,7 +63,7 @@ create table if not exists Roles (
     primary key (id)
 );
 
-create table if not exists Credentials (
+create table Credentials (
     userLogin varchar(20) not null,
     userPassword varchar(32) not null,
     roleId int not null auto_increment,
@@ -68,6 +71,24 @@ create table if not exists Credentials (
     primary key (userLogin),
     foreign key fk_Credentials_roleId (roleId) references Roles (id) on delete cascade
 );
+
+
+
+
+
+delimiter $$
+create function getProductPriceAtDate(id int, priceDate dateTime) returns float
+begin
+    return (
+        select newPrice from ProductPrice
+        where productId = id
+        and dateOfChange <= priceDate
+        order by dateOfChange desc
+        limit 1
+    );
+end;$$
+delimiter ;
+
 
 
 
@@ -138,7 +159,7 @@ delimiter ;
 
 
 delimiter $$
-create trigger wasClient18OnDateOfIssueAndDateOfIssueNotFromFutureInsert before insert on Invoices
+create trigger wasClient18OnDateOfIssueAndDOINotFromFutureInsert before insert on Invoices
 for each row
 begin
     if (
@@ -152,7 +173,7 @@ end;$$
 delimiter ;
 
 delimiter $$
-create trigger wasClient18OnDateOfIssueAndDateOfIssueNotFromFutureUpdate before update on Invoices
+create trigger Client18OnDateOfIssueAndDOINotFromFuturePlusMatchPriceUpdate before update on Invoices
 for each row
 begin
     if (
@@ -162,8 +183,13 @@ begin
     ) then
         signal sqlstate '45000';
     end if;
+    
+    update InvoiceProducts inner join Invoice on InvoiceProducts.invoiceId = Invoices.id
+    set priceAtTheTime = getProductPriceAtDate(productId, new.dateOfIssue)
+    where id = new.id;
 end;$$
 delimiter ;
+
 
 
 delimiter $$
@@ -210,6 +236,8 @@ delimiter ;
 
 
 
+
+
 delimiter $$
 create procedure addProductToInvoice(in invoiceId int, in productId int, in amount int)
 begin
@@ -226,25 +254,55 @@ begin
     
     if ((select storageAmount from Products where id = productId) < 0) then
         rollback;
+        set autocommit = 1;
         signal sqlstate '45000';
     else
         commit;
+        set autocommit = 1;
     end if;
     
-    set autocommit = 1;
 end;$$
 delimiter ;
 
 
 
 delimiter $$
-create procedure modifyProductPrice(in productId int, in newPrice int)
+create procedure addProduct(in name varchar(50), in amountInStock int, in startingPrice float)
 begin
-    insert into ProductPrice values (
+    insert ignore into Products (name, storageAmount) values (
+        name,
+        amountInStock
+    );
+    if (last_insert_id() = 0) then
+        signal sqlstate '45000';
+    else
+        call modifyProductPrice((select name from Products where Products.name = name), startingPrice);
+        if (last_insert_id() = 0) then
+            signal sqlstate '45000';
+        end if;
+    end if;
+end;$$
+delimiter ;
+
+delimiter $$
+create procedure getProduct(in id int, in priceDate datetime)
+begin
+    select Products.*, getProductPriceAtDate(id, dateTime)
+    from Products where Products.id = id;
+end;$$
+delimiter ;
+
+delimiter $$
+create procedure modifyProductPrice(in productId int, in newPrice float)
+begin
+    insert ignore into ProductPrice values (
         productId,
         now(),
         newPrice
     );
+    if (last_insert_id() = 0) then
+        signal sqlstate '45000';
+    end if;
 end;$$
 delimiter ;
 
@@ -259,6 +317,7 @@ end;$$
 delimiter ;
 
 
+<<<<<<< HEAD
 create user 'IMCashier'@'localhost' identified by '49778fc3d37abe24eedf7a29882370cd';
 grant insert on InvoiceManagement.Invoices
     to 'IMCashier'@'localhost';
@@ -268,9 +327,26 @@ grant execute on procedure InvoiceManagement.addProductToInvoice
     to 'IMCashier'@'localhost';
     
 create user 'IMAccountant'@'localhost' identified by '70905350353b3e6adb4b6a74bdc3f61a';
+=======
+
+
+
+grant select, insert on InvoiceManagement.Clients
+    to 'IMCashier'@'localhost' identified by '49778fc3d37abe24eedf7a29882370cd';
+grant insert on InvoiceManagement.Invoices
+    to 'IMCashier'@'localhost' identified by '49778fc3d37abe24eedf7a29882370cd';
+grant select on InvoiceManagement.Products
+    to 'IMCashier'@'localhost' identified by '49778fc3d37abe24eedf7a29882370cd';
+grant execute on procedure InvoiceManagement.addProductToInvoice
+    to 'IMCashier'@'localhost' identified by '49778fc3d37abe24eedf7a29882370cd';
+ 
+grant select on InvoiceManagement.Clients
+    to 'IMAccountant'@'localhost' identified by '70905350353b3e6adb4b6a74bdc3f61a';
+>>>>>>> 1f017917d11c9e948e1c9f28cf80353a45c08df4
 grant select on InvoiceManagement.Invoices
     to 'IMAccountant'@'localhost';
 grant select on InvoiceManagement.Products
+<<<<<<< HEAD
     to 'IMAccountant'@'localhost';
     
 create user 'IMManager'@'localhost' identified by '23f525e04f07113367e233d4d6416b69';
@@ -282,16 +358,46 @@ grant execute on procedure InvoiceManagement.modifyProductPrice
 create user 'IMAdmin'@'localhost' identified by 'ceda392467dc055ce0cc55cd5a23e062';
 grant all privileges on InvoiceManagement.*
     to 'IMAdmin'@'localhost';
+=======
+    to 'IMAccountant'@'localhost' identified by '70905350353b3e6adb4b6a74bdc3f61a';
+grant select on InvoiceManagement.InvoiceProducts
+    to 'IMAccountant'@'localhost' identified by '70905350353b3e6adb4b6a74bdc3f61a';
+    
+grant select, update, delete on InvoiceManagement.Products
+    to 'IMManager'@'localhost' identified by '23f525e04f07113367e233d4d6416b69';
+grant execute on procedure InvoiceManagement.addProduct
+    to 'IMManager'@'localhost' identified by '23f525e04f07113367e233d4d6416b69';
+grant execute on procedure InvoiceManagement.modifyProductPrice
+    to 'IMManager'@'localhost' identified by '23f525e04f07113367e233d4d6416b69';
+grant execute on procedure InvoiceManagement.getProduct
+    to 'IMManager'@'localhost' identified by '23f525e04f07113367e233d4d6416b69';
+    
+grant select, insert, update, delete on InvoiceManagement.Clients
+    to 'IMAdmin'@'localhost' identified by 'ceda392467dc055ce0cc55cd5a23e062';
+grant select, insert, update, delete on InvoiceManagement.Invoices
+    to 'IMAdmin'@'localhost' identified by 'ceda392467dc055ce0cc55cd5a23e062';
+grant insert, update, delete on InvoiceManagement.Products
+    to 'IMAdmin'@'localhost' identified by 'ceda392467dc055ce0cc55cd5a23e062';
+grant select, insert, update, delete on InvoiceManagement.Credentials
+    to 'IMAdmin'@'localhost' identified by 'ceda392467dc055ce0cc55cd5a23e062';
+grant execute on InvoiceManagement.*
+    to 'IMAdmin'@'localhost' identified by 'ceda392467dc055ce0cc55cd5a23e062';
+>>>>>>> 1f017917d11c9e948e1c9f28cf80353a45c08df4
     
 create user 'IMAccountFetcher'@'localhost' identified by 'accountFetcher';
 grant execute on procedure InvoiceManagement.getRolePass
     to 'IMAccountFetcher'@'localhost';
+    
+    
+   
+    
     
 insert into Roles (role, pass) values
     ("Cashier", "49778fc3d37abe24eedf7a29882370cd"),
     ("Accountant", "70905350353b3e6adb4b6a74bdc3f61a"),
     ("Manager", "23f525e04f07113367e233d4d6416b69"),
     ("Admin", "ceda392467dc055ce0cc55cd5a23e062");
+
 
 
 
