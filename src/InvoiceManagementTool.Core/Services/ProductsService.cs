@@ -61,7 +61,7 @@ namespace InvoiceManagementTool.Core.Services
 
         public void UpdateProductPrice(int productId, float newPrice)
         {
-            var sqlCommand = new MySqlCommand($"CALL modifyProductPrice({productId},\'{newPrice}\')");
+            var sqlCommand = new MySqlCommand($"CALL modifyProductPrice({productId},{newPrice})");
 
             _sqlDatabaseConnector.SendExecutableCommand(sqlCommand);
         }
@@ -80,14 +80,13 @@ namespace InvoiceManagementTool.Core.Services
 
             var productsStrings = _sqlDatabaseConnector.SendSelectCommand(sqlCommand, 4)[0];
 
-                var product = new Product
-                {
-                    Id = int.Parse(productsStrings[0]),
-                    Name = productsStrings[1],
-                    StorageAmount = int.Parse(productsStrings[2]),
-                    Price = float.Parse(productsStrings[3])
-                };
-
+            var product = new Product
+            {
+                Id = int.Parse(productsStrings[0]),
+                Name = productsStrings[1],
+                StorageAmount = int.Parse(productsStrings[2]),
+                Price = float.Parse(productsStrings[3])
+            };
 
             return product;
         }
