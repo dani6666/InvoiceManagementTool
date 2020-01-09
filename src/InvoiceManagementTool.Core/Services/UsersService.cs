@@ -19,7 +19,32 @@ namespace InvoiceManagementTool.Core.Services
 
         public Roles? ValidateUser(string login, string password)
         {
-            return Roles.Admin;
+            var sqlCommand = new MySqlCommand($"CALL getRolePass({login}, {password})");
+
+            var usersStrings = _sqlDatabaseConnector.SendSelectCommand(sqlCommand, 1);
+
+            if (usersStrings.Count == 0)
+            {
+                return null;
+            }
+
+            Roles role = Enum.Parse<Roles>(usersStrings[0][0]);
+            switch (role)
+            {
+                case Roles.Admin:
+                    _sqlDatabaseConnector.SetUpConnectionString("server=localhost;database=InvoiceManagement;uid=root;pwd=Fredek;");
+                    break;
+                case Roles.Manager:
+                    _sqlDatabaseConnector.SetUpConnectionString("server=localhost;database=InvoiceManagement;uid=root;pwd=Fredek;");
+                    break;
+                case Roles.Accountant:
+                    _sqlDatabaseConnector.SetUpConnectionString("server=localhost;database=InvoiceManagement;uid=root;pwd=Fredek;");
+                    break;
+                case Roles.Cashier:
+                    _sqlDatabaseConnector.SetUpConnectionString("server=localhost;database=InvoiceManagement;uid=root;pwd=Fredek;");
+                    break;
+            }
+            return role;
         }
 
         public void InitializeConnection()

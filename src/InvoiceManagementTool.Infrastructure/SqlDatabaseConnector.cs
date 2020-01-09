@@ -23,7 +23,7 @@ namespace InvoiceManagementTool.Infrastructure
             sqlCommand.Connection = _sqlConnection;
             sqlCommand.CommandType = CommandType.Text;
 
-            MySqlDataReader sqlDataReader = sqlCommand.ExecuteReader();
+            var sqlDataReader = sqlCommand.ExecuteReader();
             while (sqlDataReader.Read())
             {
                 var row = new string[columnCount];
