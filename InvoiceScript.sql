@@ -1,5 +1,13 @@
 
 drop database if exists InvoiceManagement;
+
+drop user 'IMCashier'@'localhost';    
+drop user 'IMAccountant'@'localhost';
+drop user 'IMManager'@'localhost';
+drop user 'IMAdmin'@'localhost';
+drop user 'IMAccountFetcher'@'localhost';
+
+    
 create database InvoiceManagement;
 use InvoiceManagement;
 
@@ -311,13 +319,12 @@ delimiter ;
 delimiter $$
 create procedure getRolePass(in userLogin varchar(20), in userPassword varchar(20))
 begin
-    select role, pass from Roles inner join Credentials on Roles.id = Credentials.roleId
+    select role from Roles inner join Credentials on Roles.id = Credentials.roleId
     where Credentials.userLogin = userLogin and Credentials.userPassword = md5(userPassword);
 end;$$
 delimiter ;
 
 
-<<<<<<< HEAD
 create user 'IMCashier'@'localhost' identified by '49778fc3d37abe24eedf7a29882370cd';
 grant insert on InvoiceManagement.Invoices
     to 'IMCashier'@'localhost';
@@ -327,26 +334,9 @@ grant execute on procedure InvoiceManagement.addProductToInvoice
     to 'IMCashier'@'localhost';
     
 create user 'IMAccountant'@'localhost' identified by '70905350353b3e6adb4b6a74bdc3f61a';
-=======
-
-
-
-grant select, insert on InvoiceManagement.Clients
-    to 'IMCashier'@'localhost' identified by '49778fc3d37abe24eedf7a29882370cd';
-grant insert on InvoiceManagement.Invoices
-    to 'IMCashier'@'localhost' identified by '49778fc3d37abe24eedf7a29882370cd';
-grant select on InvoiceManagement.Products
-    to 'IMCashier'@'localhost' identified by '49778fc3d37abe24eedf7a29882370cd';
-grant execute on procedure InvoiceManagement.addProductToInvoice
-    to 'IMCashier'@'localhost' identified by '49778fc3d37abe24eedf7a29882370cd';
- 
-grant select on InvoiceManagement.Clients
-    to 'IMAccountant'@'localhost' identified by '70905350353b3e6adb4b6a74bdc3f61a';
->>>>>>> 1f017917d11c9e948e1c9f28cf80353a45c08df4
 grant select on InvoiceManagement.Invoices
     to 'IMAccountant'@'localhost';
 grant select on InvoiceManagement.Products
-<<<<<<< HEAD
     to 'IMAccountant'@'localhost';
     
 create user 'IMManager'@'localhost' identified by '23f525e04f07113367e233d4d6416b69';
@@ -358,32 +348,7 @@ grant execute on procedure InvoiceManagement.modifyProductPrice
 create user 'IMAdmin'@'localhost' identified by 'ceda392467dc055ce0cc55cd5a23e062';
 grant all privileges on InvoiceManagement.*
     to 'IMAdmin'@'localhost';
-=======
-    to 'IMAccountant'@'localhost' identified by '70905350353b3e6adb4b6a74bdc3f61a';
-grant select on InvoiceManagement.InvoiceProducts
-    to 'IMAccountant'@'localhost' identified by '70905350353b3e6adb4b6a74bdc3f61a';
-    
-grant select, update, delete on InvoiceManagement.Products
-    to 'IMManager'@'localhost' identified by '23f525e04f07113367e233d4d6416b69';
-grant execute on procedure InvoiceManagement.addProduct
-    to 'IMManager'@'localhost' identified by '23f525e04f07113367e233d4d6416b69';
-grant execute on procedure InvoiceManagement.modifyProductPrice
-    to 'IMManager'@'localhost' identified by '23f525e04f07113367e233d4d6416b69';
-grant execute on procedure InvoiceManagement.getProduct
-    to 'IMManager'@'localhost' identified by '23f525e04f07113367e233d4d6416b69';
-    
-grant select, insert, update, delete on InvoiceManagement.Clients
-    to 'IMAdmin'@'localhost' identified by 'ceda392467dc055ce0cc55cd5a23e062';
-grant select, insert, update, delete on InvoiceManagement.Invoices
-    to 'IMAdmin'@'localhost' identified by 'ceda392467dc055ce0cc55cd5a23e062';
-grant insert, update, delete on InvoiceManagement.Products
-    to 'IMAdmin'@'localhost' identified by 'ceda392467dc055ce0cc55cd5a23e062';
-grant select, insert, update, delete on InvoiceManagement.Credentials
-    to 'IMAdmin'@'localhost' identified by 'ceda392467dc055ce0cc55cd5a23e062';
-grant execute on InvoiceManagement.*
-    to 'IMAdmin'@'localhost' identified by 'ceda392467dc055ce0cc55cd5a23e062';
->>>>>>> 1f017917d11c9e948e1c9f28cf80353a45c08df4
-    
+
 create user 'IMAccountFetcher'@'localhost' identified by 'accountFetcher';
 grant execute on procedure InvoiceManagement.getRolePass
     to 'IMAccountFetcher'@'localhost';
