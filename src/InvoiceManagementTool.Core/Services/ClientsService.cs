@@ -60,11 +60,6 @@ namespace InvoiceManagementTool.Core.Services
             _sqlDatabaseConnector.SendExecutableCommand(sqlCommand);
         }
 
-        public void DeleteClient(string clientIdentity)
-        {
-
-        }
-
         public Client GetClientById(string identity)
         {
             var sqlCommand = new MySqlCommand("SELECT id, name, surname, dateOfBirth FROM Clients" +

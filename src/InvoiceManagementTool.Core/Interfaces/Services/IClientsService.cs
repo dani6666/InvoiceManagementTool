@@ -8,7 +8,6 @@ namespace InvoiceManagementTool.Core.Interfaces.Services
         List<Client> GetAllClients();
         void AddClient(Client client);
         void UpdateClient(Client client, string lastIdentity);
-        void DeleteClient(string clientIdentity);
         Client GetClientById(string identity);
     }
 }

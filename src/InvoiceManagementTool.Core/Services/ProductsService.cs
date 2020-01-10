@@ -4,6 +4,7 @@ using InvoiceManagementTool.Core.Model;
 using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace InvoiceManagementTool.Core.Services
 {
@@ -18,28 +19,19 @@ namespace InvoiceManagementTool.Core.Services
 
         public List<Product> GetAllProducts()
         {
-            var products = new List<Product>();
-
             var sqlCommand = new MySqlCommand("SELECT id, name, storageAmount, " +
                                               $" getProductPriceAtDate(id, \'{DateTime.Now.ToString("yyyy-MM-dd")}\')" +
                                               " FROM Products");
 
             var productsStrings = _sqlDatabaseConnector.SendSelectCommand(sqlCommand, 2);
 
-            foreach (var productsString in productsStrings)
-            {
-                var product = new Product
+            return productsStrings.Select(productsString => new Product
                 {
-                    Id = int.Parse(productsString[0]),
-                    Name = productsString[1],
-                    StorageAmount = int.Parse(productsString[2]),
+                    Id = int.Parse(productsString[0]), 
+                    Name = productsString[1], 
+                    StorageAmount = int.Parse(productsString[2]), 
                     Price = float.Parse(productsString[3])
-                };
-
-                products.Add(product);
-            }
-
-            return products;
+                }).ToList();
         }
 
         public void AddProduct(Product product)
@@ -80,15 +72,13 @@ namespace InvoiceManagementTool.Core.Services
 
             var productsStrings = _sqlDatabaseConnector.SendSelectCommand(sqlCommand, 4)[0];
 
-            var product = new Product
+            return new Product
             {
                 Id = int.Parse(productsStrings[0]),
                 Name = productsStrings[1],
                 StorageAmount = int.Parse(productsStrings[2]),
                 Price = float.Parse(productsStrings[3])
-            };
-
-            return product;
+            };;
         }
     }
 }
