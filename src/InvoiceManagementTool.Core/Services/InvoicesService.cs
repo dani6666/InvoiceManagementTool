@@ -68,7 +68,7 @@ namespace InvoiceManagementTool.Core.Services
             }
         }
 
-        public void DaleteInvoice(int invoiceId)
+        public void DeleteInvoice(int invoiceId)
         {
             var sqlCommand = new MySqlCommand($"CALL removeAllProductsFromInvoice({invoiceId})");
 
