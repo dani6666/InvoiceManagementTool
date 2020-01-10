@@ -451,7 +451,7 @@ insert into Roles (role, pass) values
     ("Manager", "23f525e04f07113367e233d4d6416b69"),
     ("Admin", "ceda392467dc055ce0cc55cd5a23e062");
 
--- this starting admin has "password" as a password
+-- this starting admin has "admin" as a password
 insert into Credentials values (
     "admin",
     "5f4dcc3b5aa765d61d8327deb882cf99",
