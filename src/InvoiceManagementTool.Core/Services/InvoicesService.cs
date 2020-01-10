@@ -27,22 +27,29 @@ namespace InvoiceManagementTool.Core.Services
             var invoicesStrings = _sqlDatabaseConnector.SendSelectCommand(sqlCommand, 5);
 
             return invoicesStrings.Select(invoicesString => new InvoiceView
-                {
-                    Id = invoicesString[0],
-                    DateOfIssue = invoicesString[1],
-                    ClientName = invoicesString[2],
-                    ClientSurname = invoicesString[3],
-                    TotalValue = float.Parse(invoicesString[4])
-                })
+            {
+                Id = invoicesString[0],
+                DateOfIssue = invoicesString[1],
+                ClientName = invoicesString[2],
+                ClientSurname = invoicesString[3],
+                TotalValue = float.Parse(invoicesString[4])
+            })
                 .ToList();
         }
 
         public void AddInvoice(Invoice invoice)
         {
-            var sqlCommand = new MySqlCommand("INSERT INTO Invoices (clientId) VALUES " +
-                                              $" (\"{invoice.Client.Identity}\", \"{invoice.DateOfIssue.ToString("yyyy-MM-dd")}\", ");
+            var sqlCommand = new MySqlCommand($"CALL addInvoice(\'{invoice.Client.Identity}\', " +
+                                              $"\'{invoice.DateOfIssue.ToString("yyyy-MM-dd HH:mm:ss")}\')");
 
-            _sqlDatabaseConnector.SendExecutableCommand(sqlCommand);
+            var invoiceId = _sqlDatabaseConnector.SendSelectCommand(sqlCommand, 1)[0][0];
+
+            foreach (var product in invoice.InvoiceProducts)
+            {
+                sqlCommand = new MySqlCommand($"CALL addProductToInvoice({invoiceId},{product.Product.Id},{product.Amount})");
+
+                _sqlDatabaseConnector.SendExecutableCommand(sqlCommand);
+            }
         }
 
         public void UpdateInvoice(Invoice invoice)
@@ -81,7 +88,6 @@ namespace InvoiceManagementTool.Core.Services
 
         public Invoice GetInvoiceById(string id)
         {
-
             var sqlCommand =
                 new MySqlCommand("SELECT dateOfIssue, clientId, surname, SUM(amount * priceAtTheTime) FROM Invoices");
 

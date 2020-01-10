@@ -20,7 +20,7 @@ namespace InvoiceManagementTool.Core.Services
         public List<Product> GetAllProducts()
         {
             var sqlCommand = new MySqlCommand("SELECT id, name, storageAmount, " +
-                                              $" getProductPriceAtDate(id, \'{DateTime.Now.ToString("yyyy-MM-dd")}\')" +
+                                              $" getProductPriceAtDate(id, \'{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")}\')" +
                                               " FROM Products");
 
             var productsStrings = _sqlDatabaseConnector.SendSelectCommand(sqlCommand, 4);

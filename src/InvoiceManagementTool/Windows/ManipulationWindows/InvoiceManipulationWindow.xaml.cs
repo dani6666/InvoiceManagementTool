@@ -25,6 +25,8 @@ namespace InvoiceManagementTool.Windows
         {
             InitializeComponent();
 
+            _invoicesService = invoicesService;
+
             _allProducts = productsService.GetAllProducts();
             _allClients = clientsService.GetAllClients();
 
@@ -52,6 +54,7 @@ namespace InvoiceManagementTool.Windows
 
         public void SetParameter(Invoice parameter)
         {
+            DeleteButton.IsEnabled = true;
             var dateStackPanel = new StackPanel
             {
                 Orientation = Orientation.Horizontal
