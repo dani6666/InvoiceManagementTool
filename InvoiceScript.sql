@@ -322,7 +322,20 @@ delimiter ;
 delimiter $$
 create procedure removeAllProductsFromInvoice(in invoiceId int)
 begin
-    delete from InvoiceProducts where InvoiceProducts.invoiceId = invoiceId;
+    declare done int default false;
+    declare prId int;
+    declare invoiceProductCur cursor for select productId from InvoiceProducts where InvoiceProducts.invoiceId = invoiceId;
+    declare continue handler for not found set done = true;
+    
+    open invoiceProductCur;
+    
+    while not done do
+        fetch invoiceProductCur into prId;
+        update Products set storageAmount = storageAmount + (select amount from InvoiceProducts where InvoiceProducts.invoiceId = invoiceId and InvoiceProducts.productId = prId) where id = prId;
+        delete from InvoiceProducts where InvoiceProducts.invoiceId = invoiceId and InvoiceProducts.productId = prId;
+    end while;
+    
+    close invoiceProductCur;
 end;$$
 delimiter ;
 
