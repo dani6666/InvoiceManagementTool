@@ -443,6 +443,10 @@ grant select, insert, update on InvoiceManagement.Products
     to 'IMAdmin'@'localhost';
 grant select, insert, update, delete on InvoiceManagement.Credentials
     to 'IMAdmin'@'localhost';
+grant select on InvoiceManagement.Roles
+    to 'IMAdmin'@'localhost';
+grant select on InvoiceManagement.InvoiceProducts
+    to 'IMAdmin'@'localhost';
 grant execute on InvoiceManagement.*
     to 'IMAdmin'@'localhost';
 
