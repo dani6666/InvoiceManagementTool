@@ -74,7 +74,7 @@ create table Roles (
 create table Credentials (
     userLogin varchar(20) not null,
     userPassword varchar(32) not null,
-    roleId int not null auto_increment,
+    roleId int not null,
 
     primary key (userLogin),
     foreign key fk_Credentials_roleId (roleId) references Roles (id) on delete cascade
@@ -381,7 +381,11 @@ insert into Roles (role, pass) values
     ("Manager", "23f525e04f07113367e233d4d6416b69"),
     ("Admin", "ceda392467dc055ce0cc55cd5a23e062");
 
-
+insert into Credentials values (
+    "admin",
+    "21232f297a57a5a743894a0e4a801fc3",
+    (select id from Roles where role = "Admin")
+);
 
 
 
