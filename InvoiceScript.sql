@@ -404,8 +404,6 @@ delimiter ;
                          +----------------+
 */
 
--- all of the users have passwords that are their lowercase names wihout IM, i.e. IMCashier : cashier
-
 create user 'IMCashier'@'localhost' identified by '49778fc3d37abe24eedf7a29882370cd';
 grant select, insert on InvoiceManagement.Clients
     to 'IMCashier'@'localhost';
@@ -427,7 +425,7 @@ grant select on InvoiceManagement.InvoiceProducts
     to 'IMAccountant'@'localhost';
     
 create user 'IMManager'@'localhost' identified by '23f525e04f07113367e233d4d6416b69';
-grant select, update, delete on InvoiceManagement.Products
+grant select, update on InvoiceManagement.Products
     to 'IMManager'@'localhost';
 grant execute on procedure InvoiceManagement.addProduct
     to 'IMManager'@'localhost';
@@ -437,11 +435,11 @@ grant execute on procedure InvoiceManagement.getProduct
     to 'IMManager'@'localhost';
     
 create user 'IMAdmin'@'localhost' identified by 'ceda392467dc055ce0cc55cd5a23e062';
-grant select, insert, update, delete on InvoiceManagement.Clients
+grant select, insert, update on InvoiceManagement.Clients
     to 'IMAdmin'@'localhost';
 grant select, insert, update, delete on InvoiceManagement.Invoices
     to 'IMAdmin'@'localhost';
-grant insert, update, delete on InvoiceManagement.Products
+grant select, insert, update on InvoiceManagement.Products
     to 'IMAdmin'@'localhost';
 grant select, insert, update, delete on InvoiceManagement.Credentials
     to 'IMAdmin'@'localhost';
@@ -464,10 +462,10 @@ insert into Roles (role, pass) values
     ("Manager", "23f525e04f07113367e233d4d6416b69"),
     ("Admin", "ceda392467dc055ce0cc55cd5a23e062");
 
--- this starting admin has "admin" as a password
+
 insert into Credentials values (
     "admin",
-    "5f4dcc3b5aa765d61d8327deb882cf99",
+    md5("admin"),
     (select id from Roles where role = "Admin")
 );
 
