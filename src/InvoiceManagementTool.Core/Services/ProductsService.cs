@@ -23,7 +23,7 @@ namespace InvoiceManagementTool.Core.Services
                                               $" getProductPriceAtDate(id, \'{DateTime.Now.ToString("yyyy-MM-dd")}\')" +
                                               " FROM Products");
 
-            var productsStrings = _sqlDatabaseConnector.SendSelectCommand(sqlCommand, 2);
+            var productsStrings = _sqlDatabaseConnector.SendSelectCommand(sqlCommand, 4);
 
             return productsStrings.Select(productsString => new Product
                 {
