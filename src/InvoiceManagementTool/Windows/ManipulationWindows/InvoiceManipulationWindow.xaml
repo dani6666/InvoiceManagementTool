@@ -10,7 +10,7 @@
         <StackPanel Margin="0,2,0,-2">
             <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
                 <TextBlock Width="70" Text="Client" TextAlignment="Center" Margin="20,0,0,0"/>
-                <ComboBox Name="RoleComboBox" Width="180" Margin="15,0,0,0"/>
+                <ComboBox Name="ClientsComboBox" Width="180" Margin="15,0,0,0"/>
             </StackPanel>
             <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
                 <TextBlock Width="70" Text="Products" TextAlignment="Center" Margin="20,0,0,0"/>

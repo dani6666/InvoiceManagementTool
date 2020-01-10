@@ -11,6 +11,7 @@ namespace InvoiceManagementTool.Windows.ManipulationWindows
     {
         private readonly IProductsService _productsService;
         private int _productId;
+        private float _productPrice;
         public ProductManipulationWindow(IProductsService productsService)
         {
             InitializeComponent();
@@ -24,6 +25,7 @@ namespace InvoiceManagementTool.Windows.ManipulationWindows
             ApplyButton.Content = "Update product";
 
             _productId = parameter.Id;
+            _productPrice = parameter.Price;
 
             NameTextBox.Text = parameter.Name;
             StorageAmountTextBox.Text = parameter.StorageAmount.ToString();
@@ -54,6 +56,11 @@ namespace InvoiceManagementTool.Windows.ManipulationWindows
                 else
                 {
                     _productsService.AddProduct(product);
+                }
+
+                if(_productPrice != product.Price)
+                {
+                    _productsService.UpdateProductPrice(_productId, _productPrice);
                 }
             }
             else

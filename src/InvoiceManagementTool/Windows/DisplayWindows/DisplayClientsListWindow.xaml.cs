@@ -22,22 +22,27 @@ namespace InvoiceManagementTool.Windows.DisplayWindows
 
             foreach (var client in _clientsService.GetAllClients())
             {
-                var panel = new StackPanel();
+                var panel = new StackPanel {Orientation = Orientation.Horizontal};
+
                 panel.Children.Add(new TextBlock()
                 {
-                    Text = client.Identity
+                    Text = client.Identity,
+                    Width = 75
                 });
                 panel.Children.Add(new TextBlock()
                 {
-                    Text = client.Name
+                    Text = client.Name,
+                    Width = 70
                 });
                 panel.Children.Add(new TextBlock()
                 {
-                    Text = client.SurName
+                    Text = client.SurName,
+                    Width = 75
                 });
                 panel.Children.Add(new TextBlock()
                 {
-                    Text = client.DateOfBirth.ToShortDateString()
+                    Text = client.DateOfBirth.ToShortDateString(),
+                    Width = 60
                 });
                 panel.MouseLeftButtonDown += Row_Click;
 

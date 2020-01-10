@@ -24,7 +24,7 @@ namespace InvoiceManagementTool.Windows
             IdentityTextBox.Text = parameter.Identity;
             NameTextBox.Text = parameter.Name;
             SurnameTextBox.Text = parameter.SurName;
-            BirthDatePicker.DisplayDate = parameter.DateOfBirth;
+            BirthDatePicker.SelectedDate = parameter.DateOfBirth;
         }
 
         private void UpdateButton_Click(object sender, System.Windows.RoutedEventArgs e)
@@ -34,7 +34,7 @@ namespace InvoiceManagementTool.Windows
                 Identity = IdentityTextBox.Text,
                 Name = NameTextBox.Text,
                 SurName = SurnameTextBox.Text,
-                DateOfBirth = BirthDatePicker.DisplayDate
+                DateOfBirth = BirthDatePicker.SelectedDate.Value
             };
 
             if (_originalClientIdentity != string.Empty)

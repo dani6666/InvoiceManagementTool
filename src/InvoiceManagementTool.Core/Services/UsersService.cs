@@ -19,12 +19,46 @@ namespace InvoiceManagementTool.Core.Services
 
         public Roles? ValidateUser(string login, string password)
         {
-            return Roles.Admin;
+            var sqlCommand = new MySqlCommand($"CALL getRolePass({login}, {password})");
+
+            var usersStrings = _sqlDatabaseConnector.SendSelectCommand(sqlCommand, 1);
+
+            if (usersStrings.Count == 0)
+            {
+                return null;
+            }
+
+            var role = Enum.Parse<Roles>(usersStrings[0][0]);
+
+            switch (role)
+            {
+                case Roles.Admin:
+                    _sqlDatabaseConnector.SetUpConnectionString("server=localhost;database=InvoiceManagement" +
+                                                                ";uid=IMAdmin;pwd=ceda392467dc055ce0cc55cd5a23e062;");
+                    break;
+
+                case Roles.Manager:
+                    _sqlDatabaseConnector.SetUpConnectionString("server=localhost;database=InvoiceManagement;" +
+                                                                "uid=IMManager;pwd=23f525e04f07113367e233d4d6416b69;");
+                    break;
+
+                case Roles.Accountant:
+                    _sqlDatabaseConnector.SetUpConnectionString("server=localhost;database=InvoiceManagement;" +
+                                                                "uid=IMAccountant;pwd=70905350353b3e6adb4b6a74bdc3f61a;");
+                    break;
+
+                case Roles.Cashier:
+                    _sqlDatabaseConnector.SetUpConnectionString("server=localhost;database=InvoiceManagement;" +
+                                                                "uid=IMCashier;pwd=49778fc3d37abe24eedf7a29882370cd;");
+                    break;
+            }
+            return role;
         }
 
         public void InitializeConnection()
         {
-            _sqlDatabaseConnector.SetUpConnectionString("server=localhost;database=InvoiceManagement;uid=root;pwd=Fredek;");
+            _sqlDatabaseConnector.SetUpConnectionString("server=localhost;database=InvoiceManagement;" +
+                                                        "uid=IMAccountFetcher;pwd=accountFetcher;");
         }
 
         public List<User> GetAllUsers()
@@ -52,25 +86,49 @@ namespace InvoiceManagementTool.Core.Services
 
         public User GetUserByLogin(string userLogin)
         {
-            return null;
+            var sqlCommand = new MySqlCommand("SELECT userLogin, userPassword, role FROM Credentials" +
+                                              " INNER JOIN Roles ON Credentials.roleId = Roles.id" +
+                                              $" WHERE userLogin = \"{userLogin}\"");
+
+            var usersString = _sqlDatabaseConnector.SendSelectCommand(sqlCommand, 3)[0];
+
+            var user = new User
+            {
+                Login = usersString[0],
+                Password = usersString[1],
+                Role = Enum.Parse<Roles>(usersString[2])
+            };
+
+            return user;
         }
 
         public void AddUser(User user)
         {
-            MySqlCommand sqlCommand = new MySqlCommand("INSERT INTO Credentials (userLogin, userPassword, roleId) VALUES " +
-                                                       $" (\"{user.Login}\", \"{user.Password}\", " +
-                                                       "(" +
-                                                       " SELECT id FROM Roles" +
-                                                       " WHERE role = \"" + user.Role +"\"" +
-                                                       " LIMIT 1"+
-                                                       " ))");
+            var sqlCommand = new MySqlCommand("INSERT INTO Credentials (userLogin, userPassword, roleId) VALUES " +
+                                              $" (\"{user.Login}\", \"{user.Password}\", " +
+                                              "(" +
+                                              " SELECT id FROM Roles" +
+                                              $" WHERE role = \"{user.Role}\"" +
+                                              " LIMIT 1" +
+                                              " ))");
 
             _sqlDatabaseConnector.SendExecutableCommand(sqlCommand);
         }
 
         public void UpdateUser(User user, string lastUserLogin)
         {
-            throw new System.NotImplementedException();
+            var sqlCommand = new MySqlCommand("UPDATE Credentials SET" +
+                                              $" userLogin=\"{user.Login}\"," +
+                                              $" userPassword=\"{user.Password}\"," +
+                                              " roleId= " +
+                                              "(" +
+                                              " SELECT id FROM Roles" +
+                                              $" WHERE role = \"{user.Role}\"" +
+                                              " LIMIT 1" +
+                                              " )" +
+                                              $" WHERE userLogin = \"{lastUserLogin}\"");
+
+            _sqlDatabaseConnector.SendExecutableCommand(sqlCommand);
         }
     }
 }
