@@ -19,7 +19,7 @@ namespace InvoiceManagementTool.Core.Services
 
         public Roles? ValidateUser(string login, string password)
         {
-            var sqlCommand = new MySqlCommand($"CALL getRolePass({login}, {password})");
+            var sqlCommand = new MySqlCommand($"CALL getRolePass(\'{login}\', \'{password}\')");
 
             var usersStrings = _sqlDatabaseConnector.SendSelectCommand(sqlCommand, 1);
 
@@ -58,7 +58,7 @@ namespace InvoiceManagementTool.Core.Services
         public void InitializeConnection()
         {
             _sqlDatabaseConnector.SetUpConnectionString("server=localhost;database=InvoiceManagement;" +
-                                                        "uid=IMAccountFetcher;pwd=accountFetcher;");
+                                                        "uid=IMAccountFetcher;pwd=7d91a80810c0f91caa1a465a80b16ca2;");
         }
 
         public List<User> GetAllUsers()
