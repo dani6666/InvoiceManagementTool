@@ -1,19 +1,23 @@
 
+-- Initial section that makes sure there is no trace of db before running the script
+
 drop database if exists InvoiceManagement;
 
-drop user 'IMCashier'@'localhost';    
-drop user 'IMAccountant'@'localhost';
-drop user 'IMManager'@'localhost';
-drop user 'IMAdmin'@'localhost';
-drop user 'IMAccountFetcher'@'localhost';
+drop user if exists 'IMCashier'@'localhost';    
+drop user if exists 'IMAccountant'@'localhost';
+drop user if exists 'IMManager'@'localhost';
+drop user if exists 'IMAdmin'@'localhost';
+drop user if exists 'IMAccountFetcher'@'localhost';
 
     
 create database InvoiceManagement;
 use InvoiceManagement;
 
-
-
-
+/*
+                         +-----------------+
+                         | Table Creation  |
+                         +-----------------+
+*/
 
 create table Clients (
     id varchar(11) not null,
@@ -80,9 +84,11 @@ create table Credentials (
     foreign key fk_Credentials_roleId (roleId) references Roles (id) on delete cascade
 );
 
-
-
-
+/*
+                         +--------------------+
+                         | Function Creation  |
+                         +--------------------+
+*/
 
 delimiter $$
 create function getProductPriceAtDate(id int, priceDate dateTime) returns float
@@ -97,12 +103,16 @@ begin
 end;$$
 delimiter ;
 
+/*
+                         +-------------------+
+                         | Trigger Creation  |
+                         +-------------------+
+*/
 
-
-
+-- Clients
 
 delimiter $$
-create trigger isIdValid before insert on Clients
+create trigger isIdValidAndClient18Insert before insert on Clients
 for each row
 begin
     if (left(new.id, 1) = 'n') then
@@ -139,15 +149,7 @@ begin
             signal sqlstate '45000';
         end if;
     end if;
-end;$$
-delimiter ;
-
-
-
-delimiter $$
-create trigger isClient18Insert before insert on Clients
-for each row
-begin
+    
     if (period_diff(date_format(now(), '%Y%m'), date_format(new.dateOfBirth, '%Y%m'))/12 < 18) then
         signal sqlstate '45000';
     end if;
@@ -155,9 +157,44 @@ end;$$
 delimiter ;
 
 delimiter $$
-create trigger isClient18Update before update on Clients
+create trigger isIdValidAndClient18Update before update on Clients
 for each row
 begin
+    if (left(new.id, 1) = 'n') then
+        if (
+            mod((cast(substr(new.id, 2, 1) as unsigned) * 6 +
+            cast(substr(new.id, 3, 1) as unsigned) * 5 +
+            cast(substr(new.id, 4, 1) as unsigned) * 7 +
+            cast(substr(new.id, 5, 1) as unsigned) * 2 +
+            cast(substr(new.id, 6, 1) as unsigned) * 3 +
+            cast(substr(new.id, 7, 1) as unsigned) * 4 +
+            cast(substr(new.id, 8, 1) as unsigned) * 5 +
+            cast(substr(new.id, 9, 1) as unsigned) * 6 +
+            cast(substr(new.id, 10, 1) as unsigned) * 7), 11)
+            <>
+            cast(substr(new.id, 11, 1) as unsigned)
+        ) then
+            signal sqlstate '45000';
+        end if;
+    else
+        if (
+            mod((cast(substr(new.id, 1, 1) as unsigned) * 9 +
+            cast(substr(new.id, 2, 1) as unsigned) * 7 +
+            cast(substr(new.id, 3, 1) as unsigned) * 3 +
+            cast(substr(new.id, 4, 1) as unsigned) * 1 +
+            cast(substr(new.id, 5, 1) as unsigned) * 9 +
+            cast(substr(new.id, 6, 1) as unsigned) * 7 +
+            cast(substr(new.id, 7, 1) as unsigned) * 3 +
+            cast(substr(new.id, 8, 1) as unsigned) * 1 +
+            cast(substr(new.id, 9, 1) as unsigned) * 9 +
+            cast(substr(new.id, 10, 1) as unsigned) * 7), 10)
+            <>
+            cast(substr(new.id, 11, 1) as unsigned)
+        ) then
+            signal sqlstate '45000';
+        end if;
+    end if;
+    
     if (period_diff(date_format(now(), '%Y%m'), date_format(new.dateOfBirth, '%Y%m'))/12 < 18) then
         signal sqlstate '45000';
     end if;
@@ -165,6 +202,8 @@ end;$$
 delimiter ;
 
 
+
+-- Invoices
 
 delimiter $$
 create trigger wasClient18OnDateOfIssueAndDOINotFromFutureInsert before insert on Invoices
@@ -200,6 +239,8 @@ delimiter ;
 
 
 
+-- InvoiceProducts
+
 delimiter $$
 create trigger isAmountPositiveInsert before insert on InvoiceProducts
 for each row
@@ -222,6 +263,8 @@ delimiter ;
 
 
 
+-- ProductPrice
+
 delimiter $$
 create trigger isPricePositiveInsert before insert on ProductPrice
 for each row
@@ -242,9 +285,13 @@ begin
 end;$$
 delimiter ;
 
+/*
+                         +---------------------+
+                         | Procedure Creation  |
+                         +---------------------+
+*/
 
-
-
+-- InvoiceProducts
 
 delimiter $$
 create procedure addProductToInvoice(in invoiceId int, in productId int, in amount int)
@@ -256,7 +303,7 @@ begin
         productId,
         invoiceId,
         amount,
-        (select newPrice from ProductPrice where ProductPrice.productId = productId order by ProductPrice.dateOfChange desc limit 1)
+        getProductPriceAtDate(productId, (select dateOfIssue from Invoices where id = invoiceId))
     );
     update Products set storageAmount = (storageAmount - amount) where id = productId;
     
@@ -272,7 +319,16 @@ begin
 end;$$
 delimiter ;
 
+delimiter $$
+create procedure removeAllProductsFromInvoice(in invoiceId int)
+begin
+    delete from InvoiceProducts where InvoiceProducts.invoiceId = invoiceId;
+end;$$
+delimiter ;
 
+
+
+-- Products & ProductPrice
 
 delimiter $$
 create procedure addProduct(in name varchar(50), in amountInStock int, in startingPrice float)
@@ -316,6 +372,9 @@ delimiter ;
 
 
 
+
+-- Credentials & Roles 
+
 delimiter $$
 create procedure getRolePass(in userLogin varchar(20), in userPassword varchar(20))
 begin
@@ -324,6 +383,15 @@ begin
 end;$$
 delimiter ;
 
+
+
+/*
+                         +----------------+
+                         | User Creation  |
+                         +----------------+
+*/
+
+-- all of the users have passwords that are their lowercase names wihout IM, i.e. IMCashier : cashier
 
 create user 'IMCashier'@'localhost' identified by '49778fc3d37abe24eedf7a29882370cd';
 grant select, insert on InvoiceManagement.Clients
@@ -367,13 +435,15 @@ grant select, insert, update, delete on InvoiceManagement.Credentials
 grant execute on InvoiceManagement.*
     to 'IMAdmin'@'localhost';
 
-create user 'IMAccountFetcher'@'localhost' identified by 'accountFetcher';
+create user 'IMAccountFetcher'@'localhost' identified by '7d91a80810c0f91caa1a465a80b16ca2';
 grant execute on procedure InvoiceManagement.getRolePass
     to 'IMAccountFetcher'@'localhost';
     
-    
-   
-    
+/*
+                         +-----------------+
+                         | Finish Section  |
+                         +-----------------+
+*/
     
 insert into Roles (role, pass) values
     ("Cashier", "49778fc3d37abe24eedf7a29882370cd"),
@@ -381,9 +451,10 @@ insert into Roles (role, pass) values
     ("Manager", "23f525e04f07113367e233d4d6416b69"),
     ("Admin", "ceda392467dc055ce0cc55cd5a23e062");
 
+-- this starting admin has "password" as a password
 insert into Credentials values (
     "admin",
-    "21232f297a57a5a743894a0e4a801fc3",
+    "5f4dcc3b5aa765d61d8327deb882cf99",
     (select id from Roles where role = "Admin")
 );
 
