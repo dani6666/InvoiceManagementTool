@@ -291,6 +291,18 @@ delimiter ;
                          +---------------------+
 */
 
+-- Invoices
+
+delimiter $$
+create procedure addInvoice(in clientId varchar(11), in dateOfIssue dateTime)
+begin
+    insert into Invoices (clientId, dateOfIssue) values (clientId, dateOfIssue);
+    select last_insert_id();
+end;$$
+delimiter ;
+
+
+
 -- InvoiceProducts
 
 delimiter $$
