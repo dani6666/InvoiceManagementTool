@@ -353,7 +353,7 @@ begin
     if (last_insert_id() = 0) then
         signal sqlstate '45000';
     else
-        call modifyProductPrice((select name from Products where Products.name = name), startingPrice);
+        call modifyProductPrice((select id from Products where Products.name = name), startingPrice);
         if (last_insert_id() = 0) then
             signal sqlstate '45000';
         end if;
