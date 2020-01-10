@@ -326,27 +326,45 @@ delimiter ;
 
 
 create user 'IMCashier'@'localhost' identified by '49778fc3d37abe24eedf7a29882370cd';
+grant select, insert on InvoiceManagement.Clients
+    to 'IMCashier'@'localhost';
 grant insert on InvoiceManagement.Invoices
     to 'IMCashier'@'localhost';
-grant insert on InvoiceManagement.Clients
+grant select on InvoiceManagement.Products
     to 'IMCashier'@'localhost';
 grant execute on procedure InvoiceManagement.addProductToInvoice
     to 'IMCashier'@'localhost';
     
 create user 'IMAccountant'@'localhost' identified by '70905350353b3e6adb4b6a74bdc3f61a';
+grant select on InvoiceManagement.Clients
+    to 'IMAccountant'@'localhost';
 grant select on InvoiceManagement.Invoices
     to 'IMAccountant'@'localhost';
 grant select on InvoiceManagement.Products
     to 'IMAccountant'@'localhost';
+grant select on InvoiceManagement.InvoiceProducts
+    to 'IMAccountant'@'localhost';
     
 create user 'IMManager'@'localhost' identified by '23f525e04f07113367e233d4d6416b69';
-grant all privileges on InvoiceManagement.Products
+grant select, update, delete on InvoiceManagement.Products
+    to 'IMManager'@'localhost';
+grant execute on procedure InvoiceManagement.addProduct
     to 'IMManager'@'localhost';
 grant execute on procedure InvoiceManagement.modifyProductPrice
     to 'IMManager'@'localhost';
+grant execute on procedure InvoiceManagement.getProduct
+    to 'IMManager'@'localhost';
     
 create user 'IMAdmin'@'localhost' identified by 'ceda392467dc055ce0cc55cd5a23e062';
-grant all privileges on InvoiceManagement.*
+grant select, insert, update, delete on InvoiceManagement.Clients
+    to 'IMAdmin'@'localhost';
+grant select, insert, update, delete on InvoiceManagement.Invoices
+    to 'IMAdmin'@'localhost';
+grant insert, update, delete on InvoiceManagement.Products
+    to 'IMAdmin'@'localhost';
+grant select, insert, update, delete on InvoiceManagement.Credentials
+    to 'IMAdmin'@'localhost';
+grant execute on InvoiceManagement.*
     to 'IMAdmin'@'localhost';
 
 create user 'IMAccountFetcher'@'localhost' identified by 'accountFetcher';
