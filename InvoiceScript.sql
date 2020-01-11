@@ -49,7 +49,7 @@ create table InvoiceProducts (
     productId int not null,
     invoiceId int not null,
     amount int not null,
-    priceAtTheTime float not null,
+    priceAtTheTime int not null,
 
     primary key (invoiceId, productid),
     foreign key fk_InvoiceProducts_invoiceId (invoiceId) references Invoices (id) on delete cascade on update cascade,
@@ -59,7 +59,7 @@ create table InvoiceProducts (
 create table ProductPrice (
     productId int not null,
     dateOfChange datetime not null,
-    newPrice float not null,
+    newPrice int not null,
 
     primary key (productId, dateOfChange),
     foreign key fk_ProductPrice_productId (productId) references Products (id) on delete cascade
@@ -91,7 +91,7 @@ create table Credentials (
 */
 
 delimiter $$
-create function getProductPriceAtDate(id int, priceDate dateTime) returns float
+create function getProductPriceAtDate(id int, priceDate dateTime) returns int
 begin
     return (
         select newPrice from ProductPrice
@@ -356,7 +356,7 @@ delimiter ;
 -- Products & ProductPrice
 
 delimiter $$
-create procedure addProduct(in name varchar(50), in amountInStock int, in startingPrice float)
+create procedure addProduct(in name varchar(50), in amountInStock int, in startingPrice int)
 begin
     insert ignore into Products (name, storageAmount) values (
         name,
@@ -382,7 +382,7 @@ end;$$
 delimiter ;
 
 delimiter $$
-create procedure modifyProductPrice(in productId int, in newPrice float)
+create procedure modifyProductPrice(in productId int, in newPrice int)
 begin
     insert ignore into ProductPrice values (
         productId,
