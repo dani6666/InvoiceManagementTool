@@ -91,14 +91,30 @@ create table Credentials (
 */
 
 delimiter $$
-create function getProductPriceAtDate(id int, priceDate dateTime) returns int
+create function getProductPriceAtDate(id int, priceDate datetime) returns int
 begin
+    if (priceDate < getProductAdditionDate(id)) then
+        signal sqlstate '45000';
+    end if;
+    
     return (
         select newPrice from ProductPrice
         where productId = id
         and dateOfChange <= priceDate
         order by dateOfChange desc
         limit 1
+    );
+end;$$
+delimiter ;
+
+
+
+delimiter $$
+create function getProductAdditionDate(id int) returns dateTime
+begin
+    return (
+        select min(dateOfChange) from ProductPrice
+        where productId = id
     );
 end;$$
 delimiter ;
@@ -115,19 +131,19 @@ delimiter $$
 create trigger isIdValidAndClient18Insert before insert on Clients
 for each row
 begin
-    if (left(new.id, 1) = 'n') then
+    if (char_length(new.id) = 10) then
         if (
-            mod((cast(substr(new.id, 2, 1) as unsigned) * 6 +
-            cast(substr(new.id, 3, 1) as unsigned) * 5 +
-            cast(substr(new.id, 4, 1) as unsigned) * 7 +
-            cast(substr(new.id, 5, 1) as unsigned) * 2 +
-            cast(substr(new.id, 6, 1) as unsigned) * 3 +
-            cast(substr(new.id, 7, 1) as unsigned) * 4 +
-            cast(substr(new.id, 8, 1) as unsigned) * 5 +
-            cast(substr(new.id, 9, 1) as unsigned) * 6 +
-            cast(substr(new.id, 10, 1) as unsigned) * 7), 11)
+            mod((cast(substr(new.id, 1, 1) as unsigned) * 6 +
+            cast(substr(new.id, 2, 1) as unsigned) * 5 +
+            cast(substr(new.id, 3, 1) as unsigned) * 7 +
+            cast(substr(new.id, 4, 1) as unsigned) * 2 +
+            cast(substr(new.id, 5, 1) as unsigned) * 3 +
+            cast(substr(new.id, 6, 1) as unsigned) * 4 +
+            cast(substr(new.id, 7, 1) as unsigned) * 5 +
+            cast(substr(new.id, 8, 1) as unsigned) * 6 +
+            cast(substr(new.id, 9, 1) as unsigned) * 7), 11)
             <>
-            cast(substr(new.id, 11, 1) as unsigned)
+            cast(substr(new.id, 10, 1) as unsigned)
         ) then
             signal sqlstate '45000';
         end if;
@@ -160,19 +176,19 @@ delimiter $$
 create trigger isIdValidAndClient18Update before update on Clients
 for each row
 begin
-    if (left(new.id, 1) = 'n') then
+    if (char_length(new.id) = 10) then
         if (
-            mod((cast(substr(new.id, 2, 1) as unsigned) * 6 +
-            cast(substr(new.id, 3, 1) as unsigned) * 5 +
-            cast(substr(new.id, 4, 1) as unsigned) * 7 +
-            cast(substr(new.id, 5, 1) as unsigned) * 2 +
-            cast(substr(new.id, 6, 1) as unsigned) * 3 +
-            cast(substr(new.id, 7, 1) as unsigned) * 4 +
-            cast(substr(new.id, 8, 1) as unsigned) * 5 +
-            cast(substr(new.id, 9, 1) as unsigned) * 6 +
-            cast(substr(new.id, 10, 1) as unsigned) * 7), 11)
+            mod((cast(substr(new.id, 1, 1) as unsigned) * 6 +
+            cast(substr(new.id, 2, 1) as unsigned) * 5 +
+            cast(substr(new.id, 3, 1) as unsigned) * 7 +
+            cast(substr(new.id, 4, 1) as unsigned) * 2 +
+            cast(substr(new.id, 5, 1) as unsigned) * 3 +
+            cast(substr(new.id, 6, 1) as unsigned) * 4 +
+            cast(substr(new.id, 7, 1) as unsigned) * 5 +
+            cast(substr(new.id, 8, 1) as unsigned) * 6 +
+            cast(substr(new.id, 9, 1) as unsigned) * 7), 11)
             <>
-            cast(substr(new.id, 11, 1) as unsigned)
+            cast(substr(new.id, 10, 1) as unsigned)
         ) then
             signal sqlstate '45000';
         end if;
@@ -227,6 +243,14 @@ begin
         period_diff(date_format(new.dateOfIssue, '%Y%m'), date_format((select dateOfBirth from Clients where Clients.id = new.clientId), '%Y%m'))/12 < 18
         or
         new.dateOfIssue > now()
+    ) then
+        signal sqlstate '45000';
+    end if;
+    
+    if (
+        select max(getProductAdditionDate(InvoiceProducts.productId))
+        from ProductPrice inner join InvoiceProducts on ProductPrice.productId = InvoiceProducts.productId
+        where InvoiceProducts.invoiceId = new.id
     ) then
         signal sqlstate '45000';
     end if;
@@ -334,17 +358,30 @@ delimiter ;
 delimiter $$
 create procedure removeAllProductsFromInvoice(in invoiceId int)
 begin
-    declare done int default false;
+
+    declare isDone int default 0;
     declare prId int;
-    declare invoiceProductCur cursor for select productId from InvoiceProducts where InvoiceProducts.invoiceId = invoiceId;
-    declare continue handler for not found set done = true;
     
+    declare invoiceProductCur cursor for ( 
+        select productId from InvoiceProducts
+        where InvoiceProducts.invoiceId = invoiceId
+    );
+    declare continue handler for not found set isDone = 1;
+                                                    
     open invoiceProductCur;
+    fetch invoiceProductCur into prId;
     
-    while not done do
-        fetch invoiceProductCur into prId;
-        update Products set storageAmount = storageAmount + (select amount from InvoiceProducts where InvoiceProducts.invoiceId = invoiceId and InvoiceProducts.productId = prId) where id = prId;
+    while not isDone do
+       
+        update Products 
+        set storageAmount = storageAmount + (
+            select amount from InvoiceProducts where InvoiceProducts.invoiceId = invoiceId and InvoiceProducts.productId = prId
+        ) 
+        where id = prId;
+        
         delete from InvoiceProducts where InvoiceProducts.invoiceId = invoiceId and InvoiceProducts.productId = prId;
+        
+        fetch invoiceProductCur into prId;
     end while;
     
     close invoiceProductCur;
@@ -376,7 +413,7 @@ delimiter ;
 delimiter $$
 create procedure getProduct(in id int, in priceDate datetime)
 begin
-    select Products.*, getProductPriceAtDate(id, dateTime)
+    select Products.*, getProductPriceAtDate(id, priceDate)
     from Products where Products.id = id;
 end;$$
 delimiter ;
