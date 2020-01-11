@@ -28,7 +28,7 @@ namespace InvoiceManagementTool.Core.Services
 
             return invoicesStrings.Select(invoicesString => new InvoiceView
             {
-                Id = invoicesString[0],
+                Id = int.Parse(invoicesString[0]),
                 DateOfIssue = invoicesString[1],
                 ClientName = invoicesString[2],
                 ClientSurname = invoicesString[3],
@@ -55,7 +55,7 @@ namespace InvoiceManagementTool.Core.Services
         public void UpdateInvoice(Invoice invoice)
         {
             var sqlCommand = new MySqlCommand("UPDATE Invoices SET" +
-                                              $" clientsId=\"{invoice.Client.Identity}\", " +
+                                              $" clientId=\"{invoice.Client.Identity}\", " +
                                               $" dateOfIssue=\"{invoice.DateOfIssue.ToString("yyyy-MM-dd")}\"");
 
             _sqlDatabaseConnector.SendExecutableCommand(sqlCommand);
@@ -86,15 +86,17 @@ namespace InvoiceManagementTool.Core.Services
             _sqlDatabaseConnector.SendExecutableCommand(sqlCommand);
         }
 
-        public Invoice GetInvoiceById(string id)
+        public Invoice GetInvoiceById(int id)
         {
             var sqlCommand =
-                new MySqlCommand("SELECT dateOfIssue, clientId, surname, SUM(amount * priceAtTheTime) FROM Invoices");
+                new MySqlCommand("SELECT dateOfIssue, clientId FROM Invoices" +
+                                 $" WHERE id={id}");
 
-            var invoicesStrings = _sqlDatabaseConnector.SendSelectCommand(sqlCommand, 4)[0];
+            var invoicesStrings = _sqlDatabaseConnector.SendSelectCommand(sqlCommand, 2)[0];
 
             var invoice = new Invoice
             {
+                Id = id,
                 DateOfIssue = DateTime.Parse(invoicesStrings[0]),
                 Client = new Client
                 {
@@ -106,9 +108,9 @@ namespace InvoiceManagementTool.Core.Services
             sqlCommand =
                 new MySqlCommand("SELECT id, name, amount FROM Products" +
                                  " INNER JOIN InvoiceProducts ON Products.id = InvoiceProducts.productId" +
-                                 $" WHERE invoiceId = \"{id}\"");
+                                 $" WHERE invoiceId={id}");
 
-            var productsStrings = _sqlDatabaseConnector.SendSelectCommand(sqlCommand, 4);
+            var productsStrings = _sqlDatabaseConnector.SendSelectCommand(sqlCommand, 3);
 
             foreach (var productSting in productsStrings)
             {

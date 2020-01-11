@@ -15,6 +15,6 @@ namespace InvoiceManagementTool.Core.Interfaces.Services
 
         void DeleteInvoice(int invoiceId);
 
-        Invoice GetInvoiceById(string id);
+        Invoice GetInvoiceById(int id);
     }
 }

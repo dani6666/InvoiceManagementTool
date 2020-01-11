@@ -62,6 +62,10 @@ namespace InvoiceManagementTool.Windows.ManipulationWindows
                 {
                     _productsService.AddProduct(product);
                 }
+
+                MessageBox.Show("Operation completed successfully");
+
+                Close();
             }
             else
             {

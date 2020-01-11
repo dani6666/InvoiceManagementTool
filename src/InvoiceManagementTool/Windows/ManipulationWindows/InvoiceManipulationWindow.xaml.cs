@@ -55,14 +55,29 @@ namespace InvoiceManagementTool.Windows
         public void SetParameter(Invoice parameter)
         {
             DeleteButton.IsEnabled = true;
+            ApplyButton.Content = "Update invoice";
+
             var dateStackPanel = new StackPanel
             {
-                Orientation = Orientation.Horizontal
+                Orientation = Orientation.Horizontal,
+                Margin = new Thickness(0, 5, 0, 5)
             };
-            var textBlock = new TextBlock();
-            _dateOfIssuePicker = new DatePicker();
+            var textBlock = new TextBlock
+            {
+                Width = 90,
+                Margin = new Thickness(20, 0, 0, 0),
+                Text = "Date of issue"
+            };
+            _dateOfIssuePicker = new DatePicker
+            {
+                Width = 120,
+                Margin = new Thickness(15, 0, 0, 0),
+                SelectedDate = parameter.DateOfIssue
+            };
             dateStackPanel.Children.Add(textBlock);
             dateStackPanel.Children.Add(_dateOfIssuePicker);
+
+            ClientsComboBox.SelectedIndex = _allClients.FindIndex(c => c.Identity.Equals(parameter.Client.Identity));
 
             OverallStackPanel.Children.Insert(1, dateStackPanel);
 
@@ -79,7 +94,7 @@ namespace InvoiceManagementTool.Windows
                     ItemsSource = _allProducts,
                     Width = 140,
                     Margin = new Thickness(105, 0, 0, 0),
-                    SelectedItem = invoiceProduct.Product
+                    SelectedIndex = _allProducts.FindIndex(p => p.Id == invoiceProduct.Product.Id)
                 };
                 var textBox = new TextBox
                 {
@@ -173,6 +188,10 @@ namespace InvoiceManagementTool.Windows
                     }
                 }
             }
+
+            MessageBox.Show("Operation completed successfully");
+
+            Close();
         }
 
         private void CancelButton_Click(object sender, System.Windows.RoutedEventArgs e)
@@ -183,6 +202,10 @@ namespace InvoiceManagementTool.Windows
         private void DeleteButton_Click(object sender, RoutedEventArgs e)
         {
             _invoicesService.DeleteInvoice(_invoiceId);
+
+            MessageBox.Show("Invoice deleted");
+
+            Close();
         }
     }
 }
