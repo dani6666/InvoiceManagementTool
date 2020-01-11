@@ -231,7 +231,7 @@ begin
         signal sqlstate '45000';
     end if;
     
-    update InvoiceProducts inner join Invoice on InvoiceProducts.invoiceId = Invoices.id
+    update InvoiceProducts inner join Invoices on InvoiceProducts.invoiceId = Invoices.id
     set priceAtTheTime = getProductPriceAtDate(productId, new.dateOfIssue)
     where id = new.id;
 end;$$
