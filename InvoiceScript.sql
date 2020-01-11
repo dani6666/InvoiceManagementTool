@@ -438,13 +438,23 @@ delimiter ;
 -- Credentials & Roles 
 
 delimiter $$
+create procedure addUser(in userLogin varchar(20), in userPassword varchar(20), in roleId int)
+begin
+    insert into Credentials values (
+        userLogin,
+        md5(userPassword),
+        roleId
+    );
+end;$$
+delimiter ;
+
+delimiter $$
 create procedure getRolePass(in userLogin varchar(20), in userPassword varchar(20))
 begin
     select role from Roles inner join Credentials on Roles.id = Credentials.roleId
     where Credentials.userLogin = userLogin and Credentials.userPassword = md5(userPassword);
 end;$$
 delimiter ;
-
 
 
 /*

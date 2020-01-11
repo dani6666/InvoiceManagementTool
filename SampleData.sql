@@ -1,3 +1,9 @@
+call addUser ("dumDialect69", "1234", (select id from Roles where role = "Cashier"));
+select * from Credentials where userLogin = "dumDialect69";
+call getRolePass("dumDialect69", "1234");
+
+
+
 select "2 inserts should fail" as info;
 
 insert into Clients values (
