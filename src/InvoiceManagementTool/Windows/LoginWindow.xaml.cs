@@ -19,9 +19,16 @@ namespace InvoiceManagementTool.Windows
 
         private void LoginButton_Click(object sender, RoutedEventArgs e)
         {
-            if(_loginWindowManager.ExecuteLoginAction(LoginTextBox.Text, PasswordBox.Password))
+            try
             {
-                Close();
+                if (_loginWindowManager.ExecuteLoginAction(LoginTextBox.Text, PasswordBox.Password))
+                {
+                    Close();
+                }
+            }
+            catch
+            {
+                MessageBox.Show("Invalid data input");
             }
         }
     }

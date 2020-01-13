@@ -29,7 +29,7 @@ namespace InvoiceManagementTool.Core.Services
                 var client = new Client
                 {
                     Identity = clientsString[0],
-                    Name= clientsString[1],
+                    Name = clientsString[1],
                     SurName = clientsString[2],
                     DateOfBirth = DateTime.Parse(clientsString[3])
                 };
@@ -43,19 +43,28 @@ namespace InvoiceManagementTool.Core.Services
         public void AddClient(Client client)
         {
             var sqlCommand = new MySqlCommand("INSERT INTO Clients (id, name, surname, dateOfBirth) VALUES " +
-                                              $" (\'{client.Identity}\', \'{client.Name}\', \'{client.SurName}\', \'{client.DateOfBirth.ToString("yyyy-MM-dd")}\')");
+                                              $" (@Identity, @Name, @Surname, \'{client.DateOfBirth.ToString("yyyy-MM-dd")}\')");
+
+            sqlCommand.Parameters.AddWithValue("@Identity", client.Identity);
+            sqlCommand.Parameters.AddWithValue("@Name", client.Name);
+            sqlCommand.Parameters.AddWithValue("@Surname", client.SurName);
 
             _sqlDatabaseConnector.SendExecutableCommand(sqlCommand);
         }
 
         public void UpdateClient(Client client, string lastIdentity)
         {
-            MySqlCommand sqlCommand = new MySqlCommand("UPDATE Clients SET" +
-                                                       $" id=\'{client.Identity}\'," +
-                                                       $" name=\'{client.Name}\'," +
-                                                       $" surname=\'{client.SurName}\'," +
-                                                       $" dateOfBirth=\'{client.DateOfBirth.ToString("yyyy-MM-dd")}\'" +
-                                                       $" WHERE id=\'{lastIdentity}\'");
+            var sqlCommand = new MySqlCommand("UPDATE Clients SET" +
+                                              " id=@Identity," +
+                                              " name=@Name," +
+                                              " surname=@Surname," +
+                                              $" dateOfBirth=\'{client.DateOfBirth.ToString("yyyy-MM-dd")}\'" + 
+                                              " WHERE id=@LastId");
+
+            sqlCommand.Parameters.AddWithValue("@Identity", client.Identity);
+            sqlCommand.Parameters.AddWithValue("@Name", client.Name);
+            sqlCommand.Parameters.AddWithValue("@Surname", client.SurName);
+            sqlCommand.Parameters.AddWithValue("@LastId", lastIdentity);
 
             _sqlDatabaseConnector.SendExecutableCommand(sqlCommand);
         }
@@ -63,13 +72,15 @@ namespace InvoiceManagementTool.Core.Services
         public Client GetClientById(string identity)
         {
             var sqlCommand = new MySqlCommand("SELECT id, name, surname, dateOfBirth FROM Clients" +
-                                              $" WHERE id=\'{identity}\'");
+                                              " WHERE id=@Id");
+
+            sqlCommand.Parameters.AddWithValue("@Id", identity);
 
             var usersString = _sqlDatabaseConnector.SendSelectCommand(sqlCommand, 4)[0];
 
             var client = new Client
             {
-                Identity= usersString[0],
+                Identity = usersString[0],
                 Name = usersString[1],
                 SurName = usersString[2],
                 DateOfBirth = DateTime.Parse(usersString[3])

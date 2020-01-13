@@ -39,8 +39,10 @@ namespace InvoiceManagementTool.Core.Services
 
         public void AddInvoice(Invoice invoice)
         {
-            var sqlCommand = new MySqlCommand($"CALL addInvoice(\'{invoice.Client.Identity}\', " +
+            var sqlCommand = new MySqlCommand("CALL addInvoice(@Id, " +
                                               $"\'{invoice.DateOfIssue.ToString("yyyy-MM-dd HH:mm:ss")}\')");
+
+            sqlCommand.Parameters.AddWithValue("@Id", invoice.Client.Identity);
 
             var invoiceId = _sqlDatabaseConnector.SendSelectCommand(sqlCommand, 1)[0][0];
 
@@ -55,8 +57,10 @@ namespace InvoiceManagementTool.Core.Services
         public void UpdateInvoice(Invoice invoice)
         {
             var sqlCommand = new MySqlCommand("UPDATE Invoices SET" +
-                                              $" clientId=\'{invoice.Client.Identity}\', " +
+                                              $" clientId=@Id, " +
                                               $" dateOfIssue=\'{invoice.DateOfIssue.ToString("yyyy-MM-dd HH:mm:ss")}\'");
+
+            sqlCommand.Parameters.AddWithValue("@Id", invoice.Client.Identity);
 
             _sqlDatabaseConnector.SendExecutableCommand(sqlCommand);
         }

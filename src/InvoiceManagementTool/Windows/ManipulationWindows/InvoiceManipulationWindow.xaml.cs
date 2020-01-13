@@ -147,20 +147,40 @@ namespace InvoiceManagementTool.Windows
 
         private void ApplyButton_Click(object sender, System.Windows.RoutedEventArgs e)
         {
+            var selectedProductIds = new List<int>();
             var invoice = new Invoice
             {
                 Client = (Client)ClientsComboBox.SelectedItem
             };
 
+            if (ProductsStackPanel.Children.Count == 0)
+            {
+                MessageBox.Show("Invoice needs any product to be selected");
+                return;
+            }
+
             foreach (StackPanel productPanel in ProductsStackPanel.Children)
             {
-                var product = new InvoiceProduct
-                {
-                    Product = (Product)((ComboBox)productPanel.Children[0]).SelectedItem,
-                    Amount = int.Parse(((TextBox)productPanel.Children[1]).Text)
-                };
+                var selectedProduct = (Product)((ComboBox)productPanel.Children[0]).SelectedItem;
 
-                invoice.InvoiceProducts.Add(product);
+                if (!selectedProductIds.Contains(selectedProduct.Id) &&
+                    int.TryParse(((TextBox)productPanel.Children[1]).Text, out int amount)
+                    && amount > 0)
+                {
+                    var product = new InvoiceProduct
+                    {
+                        Product = selectedProduct,
+                        Amount = amount
+                    };
+
+                    selectedProductIds.Add(selectedProduct.Id);
+                    invoice.InvoiceProducts.Add(product);
+                }
+                else
+                {
+                    MessageBox.Show("Invalid products selection");
+                    return;
+                }
             }
 
             if (_invoiceId == 0)
@@ -170,33 +190,46 @@ namespace InvoiceManagementTool.Windows
 
                 _invoicesService.AddInvoice(invoice);
             }
-            else
+            else if(_dateOfIssuePicker.SelectedDate.HasValue)
             {
                 invoice.DateOfIssue = _dateOfIssuePicker.SelectedDate.Value;
 
-                if (invoice.DateOfIssue != _originalInvoiceData.DateOfIssue ||
-                    invoice.Client.Identity != _originalInvoiceData.ClientId)
+                try
                 {
-                    _invoicesService.UpdateInvoice(invoice);
-                }
-
-                if (invoice.InvoiceProducts.Count != _invoiceProducts.Count)
-                {
-                    _invoicesService.UpdateInvoiceProducts(_invoiceId, invoice.InvoiceProducts);
-                }
-                else
-                {
-                    for (int i = 0; i < _invoiceProducts.Count; i++)
+                    if (invoice.DateOfIssue != _originalInvoiceData.DateOfIssue ||
+                        invoice.Client.Identity != _originalInvoiceData.ClientId)
                     {
-                        if (_invoiceProducts[i].Amount != invoice.InvoiceProducts[i].Amount ||
-                            _invoiceProducts[i].Product.Id != invoice.InvoiceProducts[i].Product.Id)
-                        {
-                            _invoicesService.UpdateInvoiceProducts(_invoiceId, invoice.InvoiceProducts);
+                        _invoicesService.UpdateInvoice(invoice);
+                    }
 
-                            return;
+                    if (invoice.InvoiceProducts.Count != _invoiceProducts.Count)
+                    {
+                        _invoicesService.UpdateInvoiceProducts(_invoiceId, invoice.InvoiceProducts);
+                    }
+                    else
+                    {
+                        for (int i = 0; i < _invoiceProducts.Count; i++)
+                        {
+                            if (_invoiceProducts[i].Amount != invoice.InvoiceProducts[i].Amount ||
+                                _invoiceProducts[i].Product.Id != invoice.InvoiceProducts[i].Product.Id)
+                            {
+                                _invoicesService.UpdateInvoiceProducts(_invoiceId, invoice.InvoiceProducts);
+
+                                break;
+                            }
                         }
                     }
                 }
+                catch
+                {
+                    MessageBox.Show("Invalid data input");
+                    return;
+                }
+            }
+            else
+            {
+                MessageBox.Show("Invalid date election");
+                return;
             }
 
             MessageBox.Show("Operation completed successfully");

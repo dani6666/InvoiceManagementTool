@@ -19,7 +19,10 @@ namespace InvoiceManagementTool.Core.Services
 
         public Roles? ValidateUser(string login, string password)
         {
-            var sqlCommand = new MySqlCommand($"CALL getRolePass(\'{login}\', \'{password}\')");
+            var sqlCommand = new MySqlCommand("CALL getRolePass(@Login, @Pass)");
+
+            sqlCommand.Parameters.AddWithValue("@Login", login);
+            sqlCommand.Parameters.AddWithValue("@Pass", password);
 
             var usersStrings = _sqlDatabaseConnector.SendSelectCommand(sqlCommand, 1);
 
@@ -88,7 +91,9 @@ namespace InvoiceManagementTool.Core.Services
         {
             var sqlCommand = new MySqlCommand("SELECT userLogin, userPassword, role FROM Credentials" +
                                               " INNER JOIN Roles ON Credentials.roleId = Roles.id" +
-                                              $" WHERE userLogin = \"{userLogin}\"");
+                                              " WHERE userLogin = @Login");
+
+            sqlCommand.Parameters.AddWithValue("@Login", userLogin);
 
             var usersString = _sqlDatabaseConnector.SendSelectCommand(sqlCommand, 3)[0];
 
@@ -105,12 +110,15 @@ namespace InvoiceManagementTool.Core.Services
         public void AddUser(User user)
         {
             var sqlCommand = new MySqlCommand("INSERT INTO Credentials (userLogin, userPassword, roleId) VALUES " +
-                                              $" (\"{user.Login}\", \"{user.Password}\", " +
+                                              " (@Login, @Pass, " +
                                               "(" +
                                               " SELECT id FROM Roles" +
                                               $" WHERE role = \"{user.Role}\"" +
                                               " LIMIT 1" +
                                               " ))");
+
+            sqlCommand.Parameters.AddWithValue("@Login", user.Login);
+            sqlCommand.Parameters.AddWithValue("@Pass", user.Password);
 
             _sqlDatabaseConnector.SendExecutableCommand(sqlCommand);
         }
@@ -118,15 +126,19 @@ namespace InvoiceManagementTool.Core.Services
         public void UpdateUser(User user, string lastUserLogin)
         {
             var sqlCommand = new MySqlCommand("UPDATE Credentials SET" +
-                                              $" userLogin=\"{user.Login}\"," +
-                                              $" userPassword=\"{user.Password}\"," +
+                                              " userLogin=@Login," +
+                                              " userPassword=@Pass," +
                                               " roleId= " +
                                               "(" +
                                               " SELECT id FROM Roles" +
                                               $" WHERE role = \"{user.Role}\"" +
                                               " LIMIT 1" +
                                               " )" +
-                                              $" WHERE userLogin = \"{lastUserLogin}\"");
+                                              $" WHERE userLogin = @LastLogin");
+
+            sqlCommand.Parameters.AddWithValue("@Login", user.Login);
+            sqlCommand.Parameters.AddWithValue("@LastLogin", lastUserLogin);
+            sqlCommand.Parameters.AddWithValue("@Pass", user.Password);
 
             _sqlDatabaseConnector.SendExecutableCommand(sqlCommand);
         }

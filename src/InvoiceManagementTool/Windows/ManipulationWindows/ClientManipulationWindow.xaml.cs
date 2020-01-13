@@ -1,5 +1,6 @@
 ﻿using InvoiceManagementTool.Core.Interfaces.Services;
 using InvoiceManagementTool.Core.Model;
+using System.Windows;
 
 namespace InvoiceManagementTool.Windows
 {
@@ -29,24 +30,38 @@ namespace InvoiceManagementTool.Windows
 
         private void UpdateButton_Click(object sender, System.Windows.RoutedEventArgs e)
         {
-            var client = new Client
+            if (BirthDatePicker.SelectedDate.HasValue)
             {
-                Identity = IdentityTextBox.Text,
-                Name = NameTextBox.Text,
-                SurName = SurnameTextBox.Text,
-                DateOfBirth = BirthDatePicker.SelectedDate.Value
-            };
+                var client = new Client
+                {
+                    Identity = IdentityTextBox.Text,
+                    Name = NameTextBox.Text,
+                    SurName = SurnameTextBox.Text,
+                    DateOfBirth = BirthDatePicker.SelectedDate.Value
+                };
 
-            if (_originalClientIdentity != string.Empty)
-            {
-                _clientsService.UpdateClient(client, _originalClientIdentity);
+                try
+                {
+                    if (_originalClientIdentity != string.Empty)
+                    {
+                        _clientsService.UpdateClient(client, _originalClientIdentity);
+                    }
+                    else
+                    {
+                        _clientsService.AddClient(client);
+                    }
+                }
+                catch
+                {
+                    MessageBox.Show("Invalid data input");
+                }
+
+                Close();
             }
             else
             {
-                _clientsService.AddClient(client);
+                MessageBox.Show("Invalid data format");
             }
-
-            Close();
         }
 
         private void CancelButton_Click(object sender, System.Windows.RoutedEventArgs e)

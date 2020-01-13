@@ -36,7 +36,9 @@ namespace InvoiceManagementTool.Core.Services
 
         public void AddProduct(Product product)
         {
-            var sqlCommand = new MySqlCommand($"CALL addProduct(\'{product.Name}\',{product.StorageAmount},{product.Price * 100})");
+            var sqlCommand = new MySqlCommand($"CALL addProduct(@Name,{product.StorageAmount},{product.Price * 100})");
+
+            sqlCommand.Parameters.AddWithValue("@Name", product.Name);
 
             _sqlDatabaseConnector.SendExecutableCommand(sqlCommand);
         }
@@ -44,9 +46,11 @@ namespace InvoiceManagementTool.Core.Services
         public void UpdateProduct(Product product)
         {
             var sqlCommand = new MySqlCommand("UPDATE Products SET" +
-                                              $" name=\'{product.Name}\'," +
+                                              " name=@Name," +
                                               $" storageAmount={product.StorageAmount}" +
                                               $" WHERE id={product.Id}");
+
+            sqlCommand.Parameters.AddWithValue("@Name", product.Name);
 
             _sqlDatabaseConnector.SendExecutableCommand(sqlCommand);
         }
