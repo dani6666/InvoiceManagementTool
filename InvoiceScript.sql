@@ -248,9 +248,9 @@ begin
     end if;
     
     if (
-        select max(getProductAdditionDate(InvoiceProducts.productId))
+        (select max(getProductAdditionDate(InvoiceProducts.productId))
         from ProductPrice inner join InvoiceProducts on ProductPrice.productId = InvoiceProducts.productId
-        where InvoiceProducts.invoiceId = new.id
+        where InvoiceProducts.invoiceId = new.id) < new.dateOfIssue
     ) then
         signal sqlstate '45000';
     end if;
