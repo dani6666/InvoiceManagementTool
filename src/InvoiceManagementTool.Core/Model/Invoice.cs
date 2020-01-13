@@ -8,6 +8,6 @@ namespace InvoiceManagementTool.Core.Model
         public int Id { get; set; }
         public DateTime DateOfIssue { get; set; }
         public Client Client { get; set; }
-        public List<InvoiceProduct> InvoiceProducts { get; set; }
+        public List<InvoiceProduct> InvoiceProducts { get; set; } = new List<InvoiceProduct>();
     }
 }

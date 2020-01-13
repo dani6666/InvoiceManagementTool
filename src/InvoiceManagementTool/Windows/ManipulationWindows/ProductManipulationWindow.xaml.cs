@@ -52,16 +52,20 @@ namespace InvoiceManagementTool.Windows.ManipulationWindows
                 if (_productId!=0)
                 {
                     _productsService.UpdateProduct(product);
+
+                    if (_productPrice != product.Price)
+                    {
+                        _productsService.UpdateProductPrice(_productId, product.Price);
+                    }
                 }
                 else
                 {
                     _productsService.AddProduct(product);
                 }
 
-                if(_productPrice != product.Price)
-                {
-                    _productsService.UpdateProductPrice(_productId, _productPrice);
-                }
+                MessageBox.Show("Operation completed successfully");
+
+                Close();
             }
             else
             {

@@ -11,8 +11,10 @@ namespace InvoiceManagementTool.Core.Interfaces.Services
 
         void UpdateInvoice(Invoice invoice);
 
-        void DaleteInvoice(int invoiceId);
+        void UpdateInvoiceProducts(int invoiceId, List<InvoiceProduct> newProducts);
 
-        Invoice GetInvoiceById(string id);
+        void DeleteInvoice(int invoiceId);
+
+        Invoice GetInvoiceById(int id);
     }
 }

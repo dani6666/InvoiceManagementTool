@@ -23,17 +23,27 @@ namespace InvoiceManagementTool.Windows.DisplayWindows
 
             foreach (var product in _productsService.GetAllProducts())
             {
-                var panel = new StackPanel();
+                var panel = new StackPanel
+                {
+                    Orientation = Orientation.Horizontal
+                };
                 panel.Children.Add(new TextBlock()
                 {
-                    Text = product.Name
+                    Text = product.Name,
+                    Width = 140
                 });
                 panel.Children.Add(new TextBlock()
                 {
-                    Text = product.StorageAmount.ToString()
+                    Text = product.StorageAmount.ToString(),
+                    Width = 30
+                });
+                panel.Children.Add(new TextBlock()
+                {
+                    Text = product.Price.ToString(),
+                    Width = 30
                 });
                 panel.MouseLeftButtonDown += Row_Click;
-                panel.Name = product.Id.ToString();
+                panel.DataContext = product.Id;
 
                 ProductsStackPanel.Children.Add(panel);
             }
@@ -41,7 +51,8 @@ namespace InvoiceManagementTool.Windows.DisplayWindows
 
         private void Row_Click(object sender, MouseButtonEventArgs e)
         {
-            var productId = int.Parse(((StackPanel)sender).Name);
+            var senderName = (int)((StackPanel)sender).DataContext;
+            var productId =senderName;
 
             var product = _productsService.GetProductById(productId);
 

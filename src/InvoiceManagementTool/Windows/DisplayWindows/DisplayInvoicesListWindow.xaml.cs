@@ -22,12 +22,16 @@ namespace InvoiceManagementTool.Windows.DisplayWindows
 
             foreach (var invoice in _invoicesService.GetAllInvoices())
             {
-                var panel = new StackPanel { Orientation = Orientation.Horizontal,Name = invoice.Id};
+                var panel = new StackPanel
+                {
+                    Orientation = Orientation.Horizontal,
+                    DataContext = invoice.Id
+                };
 
                 panel.Children.Add(new TextBlock()
                 {
                     Text = invoice.DateOfIssue,
-                    Width = 65
+                    Width = 140
                 });
                 panel.Children.Add(new TextBlock()
                 {
@@ -52,7 +56,7 @@ namespace InvoiceManagementTool.Windows.DisplayWindows
 
         private void Row_Click(object sender, MouseButtonEventArgs e)
         {
-            var invoiceId = ((TextBlock)((StackPanel)sender).Children[0]).Name;
+            var invoiceId = (int)((TextBlock)((StackPanel)sender).Children[0]).DataContext;
 
             var invoice = _invoicesService.GetInvoiceById(invoiceId);
 
