@@ -17,8 +17,9 @@ namespace InvoiceManagementTool.Windows
         private readonly IProductsService _productsService;
         private DatePicker _dateOfIssuePicker;
         private readonly List<Product> _allProducts;
-        private readonly List<InvoiceProduct> _invoiceProducts;
+        private List<InvoiceProduct> _invoiceProducts;
         private readonly List<Client> _allClients;
+        private (string ClientId, DateTime DateOfIssue) _originalInvoiceData;
         private int _invoiceId;
         public InvoiceManipulationWindow(IClientsService clientsService, IInvoicesService invoicesService,
             IProductsService productsService)
@@ -57,6 +58,11 @@ namespace InvoiceManagementTool.Windows
             DeleteButton.IsEnabled = true;
             ApplyButton.Content = "Update invoice";
 
+            _originalInvoiceData.ClientId = parameter.Client.Identity;
+            _originalInvoiceData.DateOfIssue = parameter.DateOfIssue;
+            _invoiceProducts = parameter.InvoiceProducts;
+
+
             var dateStackPanel = new StackPanel
             {
                 Orientation = Orientation.Horizontal,
@@ -70,7 +76,7 @@ namespace InvoiceManagementTool.Windows
             };
             _dateOfIssuePicker = new DatePicker
             {
-                Width = 120,
+                Width = 160,
                 Margin = new Thickness(15, 0, 0, 0),
                 SelectedDate = parameter.DateOfIssue
             };
@@ -168,7 +174,11 @@ namespace InvoiceManagementTool.Windows
             {
                 invoice.DateOfIssue = _dateOfIssuePicker.SelectedDate.Value;
 
-                _invoicesService.UpdateInvoice(invoice);
+                if (invoice.DateOfIssue != _originalInvoiceData.DateOfIssue ||
+                    invoice.Client.Identity != _originalInvoiceData.ClientId)
+                {
+                    _invoicesService.UpdateInvoice(invoice);
+                }
 
                 if (invoice.InvoiceProducts.Count != _invoiceProducts.Count)
                 {

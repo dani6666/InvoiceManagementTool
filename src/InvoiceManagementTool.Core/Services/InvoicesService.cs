@@ -32,7 +32,7 @@ namespace InvoiceManagementTool.Core.Services
                 DateOfIssue = invoicesString[1],
                 ClientName = invoicesString[2],
                 ClientSurname = invoicesString[3],
-                TotalValue = float.Parse(invoicesString[4])
+                TotalValue = int.Parse(invoicesString[4]) / 100.0f
             })
                 .ToList();
         }
@@ -55,8 +55,8 @@ namespace InvoiceManagementTool.Core.Services
         public void UpdateInvoice(Invoice invoice)
         {
             var sqlCommand = new MySqlCommand("UPDATE Invoices SET" +
-                                              $" clientId=\"{invoice.Client.Identity}\", " +
-                                              $" dateOfIssue=\"{invoice.DateOfIssue.ToString("yyyy-MM-dd")}\"");
+                                              $" clientId=\'{invoice.Client.Identity}\', " +
+                                              $" dateOfIssue=\'{invoice.DateOfIssue.ToString("yyyy-MM-dd HH:mm:ss")}\'");
 
             _sqlDatabaseConnector.SendExecutableCommand(sqlCommand);
         }

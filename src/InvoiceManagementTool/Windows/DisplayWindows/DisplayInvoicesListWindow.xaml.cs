@@ -31,7 +31,7 @@ namespace InvoiceManagementTool.Windows.DisplayWindows
                 panel.Children.Add(new TextBlock()
                 {
                     Text = invoice.DateOfIssue,
-                    Width = 65
+                    Width = 140
                 });
                 panel.Children.Add(new TextBlock()
                 {
