@@ -470,6 +470,8 @@ grant insert on InvoiceManagement.Invoices
     to 'IMCashier'@'localhost';
 grant select on InvoiceManagement.Products
     to 'IMCashier'@'localhost';
+grant execute on procedure InvoiceManagement.addInvoice
+    to 'IMCashier'@'localhost';
 grant execute on procedure InvoiceManagement.addProductToInvoice
     to 'IMCashier'@'localhost';
 grant execute on function InvoiceManagement.getProductPriceAtDate
