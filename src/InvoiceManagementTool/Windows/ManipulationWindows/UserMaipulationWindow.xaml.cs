@@ -37,8 +37,8 @@ namespace InvoiceManagementTool.Windows.ManipulationWindows
 
         private void ApplyButton_Click(object sender, RoutedEventArgs e)
         {
-            if (PasswordBox.Password.Length < 5 &&
-                !PasswordBox.Password.Any(char.IsUpper) &&
+            if (PasswordBox.Password.Length < 5 ||
+                !PasswordBox.Password.Any(char.IsUpper) ||
                 !PasswordBox.Password.Any(char.IsDigit))
             {
                 MessageBox.Show("Password needs to:" + Environment.NewLine +

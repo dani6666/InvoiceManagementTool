@@ -57,8 +57,9 @@ namespace InvoiceManagementTool.Core.Services
         public void UpdateInvoice(Invoice invoice)
         {
             var sqlCommand = new MySqlCommand("UPDATE Invoices SET" +
-                                              $" clientId=@Id, " +
-                                              $" dateOfIssue=\'{invoice.DateOfIssue.ToString("yyyy-MM-dd HH:mm:ss")}\'");
+                                              " clientId=@Id, " +
+                                              $" dateOfIssue=\'{invoice.DateOfIssue.ToString("yyyy-MM-dd HH:mm:ss")}\'" +
+                                              $" WHERE id={invoice.Id}");
 
             sqlCommand.Parameters.AddWithValue("@Id", invoice.Client.Identity);
 

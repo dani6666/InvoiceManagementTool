@@ -6,6 +6,7 @@
 
   <ItemGroup>
     <PackageReference Include="MySql.Data" Version="8.0.18" />
+    <PackageReference Include="System.Management.Automation" Version="6.1.7601.17515" />
   </ItemGroup>
 
 </Project>

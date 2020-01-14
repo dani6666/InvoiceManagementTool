@@ -110,7 +110,7 @@ namespace InvoiceManagementTool.Core.Services
         public void AddUser(User user)
         {
             var sqlCommand = new MySqlCommand("INSERT INTO Credentials (userLogin, userPassword, roleId) VALUES " +
-                                              " (@Login, @Pass, " +
+                                              " (@Login, md5(@Pass), " +
                                               "(" +
                                               " SELECT id FROM Roles" +
                                               $" WHERE role = \"{user.Role}\"" +
@@ -127,7 +127,7 @@ namespace InvoiceManagementTool.Core.Services
         {
             var sqlCommand = new MySqlCommand("UPDATE Credentials SET" +
                                               " userLogin=@Login," +
-                                              " userPassword=@Pass," +
+                                              " userPassword=md5(@Pass)," +
                                               " roleId= " +
                                               "(" +
                                               " SELECT id FROM Roles" +

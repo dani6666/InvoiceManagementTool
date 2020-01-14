@@ -502,21 +502,9 @@ grant execute on function InvoiceManagement.getProductPriceAtDate
     to 'IMManager'@'localhost';
     
 create user 'IMAdmin'@'localhost' identified by 'ceda392467dc055ce0cc55cd5a23e062';
-grant select, insert, update on InvoiceManagement.Clients
+grant all privileges on InvoiceManagement.*
     to 'IMAdmin'@'localhost';
-grant select, insert, update, delete on InvoiceManagement.Invoices
-    to 'IMAdmin'@'localhost';
-grant select, insert, update on InvoiceManagement.Products
-    to 'IMAdmin'@'localhost';
-grant select, insert, update, delete on InvoiceManagement.Credentials
-    to 'IMAdmin'@'localhost';
-grant select on InvoiceManagement.Roles
-    to 'IMAdmin'@'localhost';
-grant select on InvoiceManagement.InvoiceProducts
-    to 'IMAdmin'@'localhost';
-grant execute on InvoiceManagement.*
-    to 'IMAdmin'@'localhost';
-grant drop on InvoiceManagement.*
+    grant  SYSTEM_USER on *.*
     to 'IMAdmin'@'localhost';
 
 create user 'IMAccountFetcher'@'localhost' identified by '7d91a80810c0f91caa1a465a80b16ca2';

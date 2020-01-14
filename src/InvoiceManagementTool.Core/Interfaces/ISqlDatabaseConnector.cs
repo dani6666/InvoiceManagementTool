@@ -8,5 +8,7 @@ namespace InvoiceManagementTool.Core.Interfaces
         void SetUpConnectionString(string connectionString);
         List<string[]> SendSelectCommand(MySqlCommand sqlCommand, int columnCount);
         void SendExecutableCommand(MySqlCommand sqlCommand);
+        void Backup(string filePath);
+        void Restore(string filePath);
     }
 }

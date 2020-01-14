@@ -38,6 +38,7 @@ namespace InvoiceManagementTool
                 .AddTransient<DisplayUsersListWindow>()
                 .AddTransient<DisplayClientsListWindow>()
                 .AddTransient<DisplayProductsListWindow>()
+                .AddTransient<BackupsDisplayWindow>()
 
                 .AddTransient<ClientManipulationWindow>()
                 .AddTransient<InvoiceManipulationWindow>()
@@ -61,6 +62,7 @@ namespace InvoiceManagementTool
                 .AddTransient<IClientsService, ClientsService>()
                 .AddTransient<IProductsService, ProductsService>()
                 .AddTransient<IInvoicesService, InvoicesService>()
+                .AddTransient<IBackupService, BackupService>()
                 .AddSingleton<ISqlDatabaseConnector, SqlDatabaseConnector>();
         }
 

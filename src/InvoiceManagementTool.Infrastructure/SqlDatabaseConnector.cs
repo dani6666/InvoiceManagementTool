@@ -2,6 +2,7 @@
 using MySql.Data.MySqlClient;
 using System.Collections.Generic;
 using System.Data;
+using System.IO;
 
 namespace InvoiceManagementTool.Infrastructure
 {
@@ -49,5 +50,33 @@ namespace InvoiceManagementTool.Infrastructure
             sqlCommand.ExecuteNonQuery();
         }
 
+        public void Backup(string filePath)
+        {
+            var command = new MySqlCommand
+            {
+                Connection = _sqlConnection
+            };
+
+            var backup = new MySqlBackup(command);
+            var script = backup.ExportToString();
+
+            script = script.Replace("DROP FUNCTION", "--");
+            script = script.Replace("DROP PROCEDURE", "--");
+
+            File.WriteAllText(filePath,script);
+        }
+
+        public void Restore(string filePath)
+        {
+            var command = new MySqlCommand
+            {
+                Connection = _sqlConnection
+            };
+
+            var backup = new MySqlBackup(command);
+            backup.ImportFromFile(filePath);
+            
+            
+        }
     }
 }

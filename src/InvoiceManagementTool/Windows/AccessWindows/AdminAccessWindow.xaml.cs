@@ -1,4 +1,5 @@
-﻿using InvoiceManagementTool.Windows.DisplayWindows;
+﻿using InvoiceManagementTool.Core.Interfaces.Services;
+using InvoiceManagementTool.Windows.DisplayWindows;
 using InvoiceManagementTool.Windows.ManipulationWindows;
 using System.Windows;
 
@@ -10,11 +11,13 @@ namespace InvoiceManagementTool.Windows
     public partial class AdminAccessWindow : Window
     {
         private readonly IWindowNavigator _windowNavigator;
-        public AdminAccessWindow(IWindowNavigator windowNavigator)
+        private readonly IBackupService _backupService;
+        public AdminAccessWindow(IWindowNavigator windowNavigator, IBackupService backupService)
         {
             InitializeComponent();
 
             _windowNavigator = windowNavigator;
+            _backupService = backupService;
         }
 
         private void ShowInvoicesButton_Click(object sender, RoutedEventArgs e)
@@ -54,7 +57,9 @@ namespace InvoiceManagementTool.Windows
 
         private void BackupDatabaseButton_Click(object sender, RoutedEventArgs e)
         {
+            _backupService.BackupDatabase();
 
+            MessageBox.Show("Backup created");
         }
 
         private void AddUserButton_Click(object sender, RoutedEventArgs e)
@@ -64,7 +69,7 @@ namespace InvoiceManagementTool.Windows
 
         private void RestoreDatabaseButton_Click(object sender, RoutedEventArgs e)
         {
-            
+            _windowNavigator.ShowDialog<BackupsDisplayWindow>();
         }
     }
 }

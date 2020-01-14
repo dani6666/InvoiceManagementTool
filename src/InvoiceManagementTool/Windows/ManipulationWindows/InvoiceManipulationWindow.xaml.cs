@@ -185,13 +185,13 @@ namespace InvoiceManagementTool.Windows
 
             if (_invoiceId == 0)
             {
-                invoice.Id = _invoiceId;
                 invoice.DateOfIssue = DateTime.Now;
 
                 _invoicesService.AddInvoice(invoice);
             }
             else if(_dateOfIssuePicker.SelectedDate.HasValue)
             {
+                invoice.Id = _invoiceId;
                 invoice.DateOfIssue = _dateOfIssuePicker.SelectedDate.Value;
 
                 try

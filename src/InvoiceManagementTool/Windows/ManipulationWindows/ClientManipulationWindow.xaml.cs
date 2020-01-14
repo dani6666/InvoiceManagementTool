@@ -54,6 +54,7 @@ namespace InvoiceManagementTool.Windows
                 catch
                 {
                     MessageBox.Show("Invalid data input");
+                    return;
                 }
 
                 Close();

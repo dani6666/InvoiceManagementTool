@@ -39,7 +39,8 @@ namespace InvoiceManagementTool.Windows.DisplayWindows
                 panel.Children.Add(new TextBlock()
                 {
                     Text = Enum.GetName(typeof(Roles), user.Role),
-                    Margin = new Thickness(10,0,0,0)
+                    Margin = new Thickness(10,0,0,0),
+                    Width = 50
                 });
                 panel.MouseLeftButtonDown += Row_Click;
 

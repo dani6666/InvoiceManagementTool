@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:InvoiceManagementTool.Windows.DisplayWindows"
         mc:Ignorable="d"
-        Title="DisplayInvoicesListWindow" Height="450" Width="800">
+        Title="DisplayInvoicesListWindow" Height="Auto" Width="365" SizeToContent="Height">
     <Grid>
         <StackPanel Name="InvoicesStackPanel">
 

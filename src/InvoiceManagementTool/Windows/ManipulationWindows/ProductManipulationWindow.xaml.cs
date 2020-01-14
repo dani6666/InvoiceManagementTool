@@ -49,19 +49,28 @@ namespace InvoiceManagementTool.Windows.ManipulationWindows
                     Price = price
                 };
 
-                if (_productId!=0)
+                try
                 {
-                    _productsService.UpdateProduct(product);
-
-                    if (_productPrice != product.Price)
+                    if (_productId != 0)
                     {
-                        _productsService.UpdateProductPrice(_productId, product.Price);
+                        _productsService.UpdateProduct(product);
+
+                        if (_productPrice != product.Price)
+                        {
+                            _productsService.UpdateProductPrice(_productId, product.Price);
+                        }
+                    }
+                    else
+                    {
+                        _productsService.AddProduct(product);
                     }
                 }
-                else
+                catch
                 {
-                    _productsService.AddProduct(product);
+                    MessageBox.Show("Invalid data input");
+                    return;
                 }
+
 
                 MessageBox.Show("Operation completed successfully");
 
