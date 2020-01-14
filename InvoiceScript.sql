@@ -248,9 +248,9 @@ begin
     end if;
     
     if (
-        select max(getProductAdditionDate(InvoiceProducts.productId))
+        (select max(getProductAdditionDate(InvoiceProducts.productId))
         from ProductPrice inner join InvoiceProducts on ProductPrice.productId = InvoiceProducts.productId
-        where InvoiceProducts.invoiceId = new.id
+        where InvoiceProducts.invoiceId = new.id) > new.dateOfIssue
     ) then
         signal sqlstate '45000';
     end if;
@@ -472,6 +472,8 @@ grant select on InvoiceManagement.Products
     to 'IMCashier'@'localhost';
 grant execute on procedure InvoiceManagement.addProductToInvoice
     to 'IMCashier'@'localhost';
+grant execute on function InvoiceManagement.getProductPriceAtDate
+    to 'IMCashier'@'localhost';
     
 create user 'IMAccountant'@'localhost' identified by '70905350353b3e6adb4b6a74bdc3f61a';
 grant select on InvoiceManagement.Clients
@@ -482,6 +484,8 @@ grant select on InvoiceManagement.Products
     to 'IMAccountant'@'localhost';
 grant select on InvoiceManagement.InvoiceProducts
     to 'IMAccountant'@'localhost';
+grant execute on function InvoiceManagement.getProductPriceAtDate
+    to 'IMAccountant'@'localhost';
     
 create user 'IMManager'@'localhost' identified by '23f525e04f07113367e233d4d6416b69';
 grant select, update on InvoiceManagement.Products
@@ -491,6 +495,8 @@ grant execute on procedure InvoiceManagement.addProduct
 grant execute on procedure InvoiceManagement.modifyProductPrice
     to 'IMManager'@'localhost';
 grant execute on procedure InvoiceManagement.getProduct
+    to 'IMManager'@'localhost';
+grant execute on function InvoiceManagement.getProductPriceAtDate
     to 'IMManager'@'localhost';
     
 create user 'IMAdmin'@'localhost' identified by 'ceda392467dc055ce0cc55cd5a23e062';
@@ -507,6 +513,8 @@ grant select on InvoiceManagement.Roles
 grant select on InvoiceManagement.InvoiceProducts
     to 'IMAdmin'@'localhost';
 grant execute on InvoiceManagement.*
+    to 'IMAdmin'@'localhost';
+grant drop on InvoiceManagement.*
     to 'IMAdmin'@'localhost';
 
 create user 'IMAccountFetcher'@'localhost' identified by '7d91a80810c0f91caa1a465a80b16ca2';
@@ -528,7 +536,7 @@ insert into Roles (role, pass) values
 
 insert into Credentials values (
     "admin",
-    md5("admin"),
+    md5("Admin1"),
     (select id from Roles where role = "Admin")
 );
 
